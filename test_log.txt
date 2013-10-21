@@ -5,8 +5,19 @@
 # Compliance Level 0
 Input		Expected output
 1 5		1 2 3 4 5
+verified 10/20
+
 6 2             6 5 4 3 2
+verified 10/20
+
 1 1             1
+verified 10/20
+
 a c             error(integers only)
+verified 10/20
+
 1.0 5.0         error(integers only)
+verified 10/20
+
 1               error(too few arguments)
+verified 10/20

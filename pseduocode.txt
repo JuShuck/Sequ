@@ -8,9 +8,23 @@ if there are not the correct number of arguments
     print error message
     exit the program
 
-if the arguments are not integers
+
+Try
+    casting the arguments to integers
+catch
+    if you cannot make the cast conversion print
     print error message
     exit the program
 
-for argument A to Argument B
-    print each integer
+
+
+if arg A is smaller than B
+    for argument A to Argument B
+        print each integer
+
+if arg B is larger than A
+    while arg A is larger than B
+        print arg A
+        decrement arg A
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

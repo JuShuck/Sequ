@@ -4,7 +4,7 @@
 
 
 # Compliance Level 0
-if there are more than 2 arguments
+if there are not the correct number of arguments
     print error message
     exit the program
 

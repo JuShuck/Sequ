@@ -1,0 +1,16 @@
+# This file will contain the pseduocode used throughout this program.
+# Name: Justin Shuck
+# Copy write © Justin Shuck
+
+
+# Compliance Level 0
+if there are more than 2 arguments
+    print error message
+    exit the program
+
+if the arguments are not integers
+    print error message
+    exit the program
+
+for argument A to Argument B
+    print each integer

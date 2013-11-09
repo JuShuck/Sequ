@@ -1,5 +1,12 @@
 # A readme file for the sequ project. This project was completed during Fall term 2013 under the instruction of Dr. Massey.
 # Author: Justin Shuck
-# Copy write © Justin Shuck
+# Copy right (c) Justin Shuck
 
 The sequ command is a modified version of seq.
+
+Commands:
+	-f --format 		uses printf floating-point format
+	-s --separator		seperates numbers
+	-w --equal-width	equalizes width by adding leading zeros
+	-h --help		displays the commands and a description of the 				        commands
+	-v --version		prints the version of sequ		

@@ -1,6 +1,6 @@
 # This file will contain all of the tests of input and  expected output throught the sequ project. This file will contain all of the testing throughout the entire project.
 # Name: Justin Shuck
-# Copy write © Justin Shuck
+# Copy right © Justin Shuck
 
 # Compliance Level 0
 Input		Expected output
@@ -21,3 +21,6 @@ verified 10/20
 
 1               error(too few arguments)
 verified 10/20
+#########################################################
+# Compliance Level 1
+input         Expected output

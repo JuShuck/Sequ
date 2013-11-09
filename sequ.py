@@ -1,6 +1,6 @@
 # This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013.
 # Name: Justin Shuck
-# Copy write  Justin Shuck
+# Copy right  Justin Shuck
 
 
 from sys import argv,exit

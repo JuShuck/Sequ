@@ -1,27 +1,24 @@
 # This file will contain all of the tests of input and  expected output throught the sequ project. This file will contain all of the testing throughout the entire project.
 # Name: Justin Shuck
-# Copy right © Justin Shuck
+# Copy right (c)  Justin Shuck
 
-# Compliance Level 0
-Input		Expected output
-1 5		1 2 3 4 5
-verified 10/20
-
-6 2             6 5 4 3 2
-verified 10/20
-
-1 1             1
-verified 10/20
-
-a c             error(integers only)
-verified 10/20
-
-1.0 5.0         error(integers only)
-verified 10/20
-
-1               error(too few arguments)
-verified 10/20
-#########################################################
 # Compliance Level 1
-input         Expected output
-- - -
+Input				Expected output
+sequ 1 5			1 2 3 4 5 
+sequ -f 1 5			1.0 2.0 3.0 4.0 5.0
+sequ --format 1 5 		1.0 2.0 3.0 4.0 5.0
+sequ -f				Error
+sequ -s=a 1 5			1a2a3a4a5
+sequ --separator=a 1 5		1a2a3a4a5
+sequ -s 1 5			1 2 3 4 5
+sequ -w 8 10			08 09 10
+sequ --equal-width 9 10		09 10
+sequ -h				display commands
+sequ -h 1 5			display commands 1 2 3 4 5
+sequ -v				display version
+sequ -v	1 5			display version 1 2 3 4 5
+sequ -fs=a 1 4			Error
+sequ -fw 7 10			Error
+sequ -fh			Error
+sequ -fswhv			Error
+sequ -fswhv 1 4			Error

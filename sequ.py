@@ -4,7 +4,7 @@
 
 
 from sys import argv,exit
-import numbers
+import numbers,argparse
 
 
 # Used to verify that there is not more than 2 arguments(besides the file)

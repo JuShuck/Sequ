@@ -5,36 +5,49 @@
 
 # Compliance Level 1
 
+define print function that take a lower, increment and upper parameters
+	While the lower is less than or equal to the upper
+		print the lower
+		add the increment to the lower
+define a printf function that has functionality similar to that in C
+	Print the line with the format requested
+
 if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
 
 
-Try
-    casting the arguments to integers
-catch
-    if you cannot make the cast conversion print
-    print error message
-    exit the program
 
 if argument -f is there
-	cast the input to floating point numbers
+	find the formating wanted
+	While the lower is less than or equal to the upper
+		call printf to print the format requested
 if argument -s is there 
-	add the string following -s as the seperator in the sequence
+	Find the string added after the -s flag
+	While the lower is less than or equal to the upper bound
+		print the lower bound followed by the seperator
+	exit the program
 if argument -w is there
-	make all of the output the same length
+	Consider if the string has an increment argument
+	find the max length of the upper bound
+	While the lower is less than or equal to the upper bound
+		print the strings so the width of each string is equal to max length
+	exit the program
 if arguemnt -v is there
 	prints the version of sequ
+	exit the program
 
+if there are less than 2 arguments
+	print error message
+	exit the program
 
-
-if arg A is smaller than B
-    for argument A to Argument B
-        print each integer
-
-if arg B is larger than A
-    while arg A is larger than B
-        print arg A
-        decrement arg A
+if the length does not have an argument flag(i.e less than or equal to 3 arguments
+	Try
+		Casting the arguments to integers
+		call the print function
+	catch
+		If you cannot make the cast conversion
+		Print error message
+		exit the program
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

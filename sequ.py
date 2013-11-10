@@ -4,7 +4,8 @@
 
 
 from sys import argv,exit
-import numbers,argparse
+import numbers,argparse,sys
+
 #Current version of sequ
 __VERSION =  '1.0.0'
 
@@ -14,6 +15,7 @@ def printSeq(lower,increment,upper):
     while lower <= upper:
         print(lower)
         lower = lower + increment 
+
 def printf(format,*args):
     sys.stdout.write(format % args)
 
@@ -22,6 +24,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--version","-v", help="View the current version of sequ", action="store_true")
 parser.add_argument("--separator","-s", help="Seperate the sequence by a string", action="store_true")
 parser.add_argument("--format","-f", help = "Uses Floating-point Format",action = "store_true")
+parser.add_argument("--equalwidth","-w", help = "Equalies the width by adding leading zeros", action = "store_true")
 
 #Postionals
 parser.add_argument("string", nargs="?", default= " ")
@@ -42,7 +45,7 @@ if args.separator:
         lower = int(str(argv[3]))
         upper = int(str(argv[4]))
         string = str(argv[2])   
-    while lower < upper:
+    while lower <= upper:
         print lower,
         print string,
         lower+=1       
@@ -58,13 +61,28 @@ if args.format:
 	upper = float(str(argv[4]))
 	increment = float(str(argv[3]))
 
+    printSeq(lower,increment,upper)
+    exit(1)
+if args.equalwidth:
+    if len(argv) == 4:
+         lower = int(str(argv[2]))
+	 upper = int(str(argv[3]))
+	 increment = 1
+	 maxLength = len(argv[3])
+    else:
+	 lower = int(str(argv[2]))
+	 upper = int(str(argv[4]))
+	 increment = int(str(argv[3]))
+         maxLength = len(argv[4])
     while lower <= upper:
-        print lower
-        lower+=increment
+         print str(lower).zfill(maxLength)
+	 lower = lower+increment
+
     exit(1)
 
+
 # Used to verify that there is not more than 2 arguments(besides the file)
-if len(argv) < 2 or len(argv) > 6:
+if len(argv) <= 2 or len(argv) > 6:
     print('Error: Invalid number of arguments.')
     exit(1)
 
@@ -74,16 +92,15 @@ if len(argv) >= 3:
     try:
 	#castInt()
 #cast the arguments to int types
-        a = int(str(argv[1]))
-        c = int(str(argv[2]))
+        lower = int(str(argv[1]))
+        upper = int(str(argv[2]))
         if len(argv) == 4:
-            c = int(str(argv[3]))
-            b = int(str(argv[2]))
+            upper = int(str(argv[3]))
+            increment = int(str(argv[2]))
         else:
-            b = 1
+            increment = 1
     except ValueError:
         print("Error: Invalid argument type")
         exit(1)
 
-
-printSeq(a,b,c)
+    printSeq(lower,increment,upper)

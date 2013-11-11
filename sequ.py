@@ -10,19 +10,30 @@ import numbers,argparse,sys
 __VERSION =  '1.0.0'
 
 
-#will print the sequence
+#will print the sequence that has a lower and upper bound and an increment.
 def printSeq(lower,increment,upper):
     while lower <= upper:
         print(lower)
         lower = lower + increment 
-
+#emulates the printf function that is used in C
 def printf(format,*args):
     sys.stdout.write(format % args)
     print
 
+#Verifys the argument is an int. If the cast fails, it is not an int.
+def verifyInt(argument,x):
+    try:
+        argument = int(str(argv[x]))
+    except ValueError:
+            print "Error: Invalid input. Must have form '-s STRING Lower Upper'"
+            exit(1)
+    return argument
+
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
+
 group = parser.add_mutually_exclusive_group()
+
 group.add_argument("--version","-v", help="View the current version of sequ", action="count")
 group.add_argument("--separator","-s", help="Seperate the sequence by a string", action="count")
 group.add_argument("--format","-f", help = "Uses Floating-point Format",action = "count")
@@ -34,65 +45,82 @@ parser.add_argument("lower", type = int, nargs = "?", help = "Lower bounds of th
 parser.add_argument("upper", type = int, nargs = "?", help = "Upper bounds of the sequence")
 
 args = parser.parse_args()
+
+#The definition of Arguments
 if args.version == 1:
-    print("version"+__VERSION)
+    print"SEQU Version "+__VERSION
     exit(1)
+
+#-s and --separator
 if args.separator == 1:
-    print("Separator mode!"+str(argv[2]))
+    #If the form is of 'sequ.py -s 1 10' i.e no position after -s flag
+    print len(argv)
     if len(argv) ==4:
-        lower = int(str(argv[2]))
-        upper = int(str(argv[3]))
-        string = "\n"
+	#verify if the variables are in the proper position
+	lower = verifyInt(str(argv[2]),2)
+	upper = verifyInt(str(argv[3]),3)
+        string = "\n"		#default string separator
+    #The string is present after the -s flag
     else:
-        lower = int(str(argv[3]))
-        upper = int(str(argv[4]))
+        lower = verifyInt(str(argv[3]),3)
+        upper = verifyInt(str(argv[4]),4)
         string = str(argv[2])   
+    #Prints the sequence with the string as a separator
     while lower <= upper:
-        print lower,
-        print string,
+        print lower, string,
         lower+=1       
+    
     exit(1)
+
+#-f and --format
 if args.format == 1:
+    #No positional after the -f flag
     if len(argv) == 4:
-	try:
-            lower = int(str(argv[2]))
-	    upper = int(str(argv[3]))
-        except ValueError:
-	    print "Error: Invalid Input"
-	    exit(1)
-        formatType = "%g"
+	#verify if the variables are in the proper position
+        lower = verifyInt(str(argv[2]),2)
+        upper = verifyInt(str(argv[3]),3)
+        formatType = "%g"	#default format type
+
+	#Prints the sequence with the printf function
         while lower <= upper:
 	    printf(formatType,lower)
 	    lower+=1
 	exit(1)
+
     else:
-        lower = int(str(argv[3]))
-	upper = int(str(argv[4]))
+        lower = verifyInt(str(argv[3]),3)
+        upper = verifyInt(str(argv[4]),4)
 	formatType = str(argv[2])
     
-   #if (id(str(argv[2])) != id("%g")) or (id(str(argv[2])) != id(str("%X"))) or (str(argv[2] !=  "%e") or (str(argv[2]) != "%f")):
+	#Accepted format types that this program accepts
 	accepted = {'%g','%X','%e','%f'}
+
+	#Prints if the user entered a proper format type, otherwise exit
 	if formatType in accepted:
             while lower <= upper:
                 printf(formatType,lower)
                 lower+=1
         else:
- 	    print 'Error: Invalid format Type'
+ 	    print 'Error: Invalid format Type.'
 	    exit(1)	
 
+#-w and --equalwidth
 if args.equalwidth == 1:
+    #Verifys if there is an increment variable ( Lower, Increment, Upper)
     if len(argv) == 4:
-         lower = int(str(argv[2]))
-	 upper = int(str(argv[3]))
-	 increment = 1
-	 maxLength = len(argv[3])
+         lower = verifyInt(str(argv[2]),2)
+         upper = verifyInt(str(argv[3]),3)
+	 increment = 1			#Default increment is 1
+	 maxWidth = len(str(argv[3]))	#Gets the Max Width from the Upper argument
     else:
-	 lower = int(str(argv[2]))
-	 upper = int(str(argv[4]))
-	 increment = int(str(argv[3]))
-         maxLength = len(argv[4])
+	 lower = verifyInt(str(argv[2]),2)
+	 upper = verifyInt(str(argv[4]),4)
+	 increment = verifyInt(str(argv[3]),3)
+         maxWidth = len((argv[4]))	#Gets the Max Width from the Upper argument
+
+    #Prints the sequence with equal width using zfill
     while lower <= upper:
-         print str(lower).zfill(maxLength)
+         print str(lower).zfill(maxWidth)
 	 lower = lower+increment
 
     exit(1)
@@ -106,18 +134,14 @@ if len(argv) <= 2 or len(argv) > 6:
 
 #Checks to verify that the arguments are both integers. will terminate with an error if one of the arguments is bad.
 if len(argv) >= 3:
-    try:
-	#castInt()
-#cast the arguments to int types
-        lower = int(str(argv[1]))
-        upper = int(str(argv[2]))
-        if len(argv) == 4:
-            upper = int(str(argv[3]))
-            increment = int(str(argv[2]))
-        else:
-            increment = 1
-    except ValueError:
-        print("Error: Invalid argument type")
-        exit(1)
+
+    lower = verifyInt(str(argv[1]),1)
+    upper = verifyInt(str(argv[2]),2)
+    #if there is an increment variable(lower,increment,upper)
+    if len(argv) == 4:
+        upper = verifyInt(str(argv[3]),3)
+        increment = verifyInt(str(argv[2]),2)
+    else: 
+        increment = 1	#defaults increment at 1
 
     printSeq(lower,increment,upper)

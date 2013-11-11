@@ -54,3 +54,11 @@ sequ -fswhv			Error
 Confirmed
 sequ -fswhv 1 4			Error
 Confirmed
+
+sequ -s a 10			Error
+Confirmed. Added try catch block in separator.
+
+sequ -s 1 2 3 4 5		Error
+Confirmed. Argparse handles this case
+
+

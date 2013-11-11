@@ -35,9 +35,22 @@ Cofirmed
 sequ -v	1 5			display version
 Confirmed
 
+sequ --format %X 10 15		A B C D E F
+Confirmed
+sequ -f %X 10 15		A B C D E F
+Confirmed
+sequ --format %go 10 15		Error
+Confirmed
+sequ -f %go 10 15		Error
+Confirmed
+
 sequ -fs=a 1 4			Error
 Confirmed
 sequ -fw 7 10			Error
+Confirmed
 sequ -fh			Error
+Confirmed
 sequ -fswhv			Error
+Confirmed
 sequ -fswhv 1 4			Error
+Confirmed

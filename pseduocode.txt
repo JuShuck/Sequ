@@ -3,7 +3,7 @@
 # Copy Right(c) Justin Shuck
 
 
-# Compliance Level 1
+# Compliance Level 2
 
 define print function that take a lower, increment and upper parameters
 	While the lower is less than or equal to the upper
@@ -12,30 +12,94 @@ define print function that take a lower, increment and upper parameters
 define a printf function that has functionality similar to that in C
 	Print the line with the format requested
 
+define a maxWidth function that takes a lower increment and upper parameters
+	use a holder to hold the maxwidth of the sequence
+	if the increment is 0 return the width as 0
+	while lower is less than or equal to the upper
+		check to see if the width of lower is bigger than the holder
+		increment the lower with the increment variable
+	return the max width
+
+define a function that will verify if the input is a float or int
+	try casting to an int
+	return the argument if you can cast it to an int
+	OTHERWISE try casting to a float
+	return argument if you can cast it to a float
+	OTHERWISE it was an invalid input. exit the program.
+
+define a verify increment function to see if the increment is less than or equal to 0.
+	check to see if its less than or equal to 0
+		exit the program with an error message
+
 if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
 
 
 
+if there is a flag(i.e. -f,-s...)
+	if there are 2 arguments:
+		Print error message
+		exit
+	if there are 3 arguments
+		Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
+		Determine if it is a float or int
+			call the appropriate defaults (either float or int)
+	if there are 4 arguments
+		Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
+                Determine if it is a float or int
+                        assigns the proper defaults (either int defaults or float defaults)
+
+	if there are 5 arguments (special cases)
+		Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
+		if its a -f flag
+			Assign the value of the format flag
+		if its a -s flag
+			Assign the value of the string flag
+		if its a -w flag
+			Assign the value of its lower, increment and upper fields
+		if its a -p flag
+	        	if the padding character is invalid(MUST BE 1)
+                        	exit the program with an error
+                        otherwise
+                                assign the value of the lower and upper
+				determine if the lower/upper is a float
+					assigns the proper defaults (either int defaults or float defaults)
+
+	handle the only case that could have 6 arguments (-p flag [-p lower inc upper])
+		if its a -p flag
+			if the padding character is invalid(MUST BE 1)
+				exit the program with an error
+			otherwise
+				assign the value of the lower, increment and upper
+		otherwise print an error saying that 'there are too many arguments' and exit.
+			
 if argument -f is there
-	find the formating wanted
-	While the lower is less than or equal to the upper
+	while the lower is less than or equal to the upper bound
 		call printf to print the format requested
 if argument -s is there 
-	Find the string added after the -s flag
 	While the lower is less than or equal to the upper bound
 		print the lower bound followed by the seperator
 	exit the program
 if argument -w is there
-	Consider if the string has an increment argument
-	find the max length of the upper bound
 	While the lower is less than or equal to the upper bound
 		print the strings so the width of each string is equal to max length
 	exit the program
 if arguemnt -v is there
 	prints the version of sequ
 	exit the program
+if argument -W is there
+	While the lower is less than or equal to the upper
+		print the lower, (the comma will print on the same line)
+		add the increment to the lower
+	exit the program
+if argument -p is there
+	determine the max width of the sequence using maxWidth()
+	while the lower is less than or equal to the upper
+		print the lower using 'rjust' with the padding character and using the max width
+		increment the lower variable
+	exit the progtam
+	
 
 if there are less than 2 arguments
 	print error message

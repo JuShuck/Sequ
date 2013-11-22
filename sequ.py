@@ -4,15 +4,25 @@
 
 
 from sys import argv,exit
-import numbers,argparse,sys
+import numbers,argparse,sys,string
 
 #Current version of sequ
 __VERSION =  '1.0.0'
+__STRING = " "
+__LOWER = 1
+__INCREMENT = 1
+__FORMAT = "%g"
+__F_LOWER = 1.0
+__F_INCREMENT = 1.0
 
-
-#Default invalid input error and exit
+#Default invalid input error and exits
 def invalidInput():
     print 'Error: Invalid Input.'
+    exit(1)
+
+#Handles the invalid pad character error and exits
+def invalidPadChar():
+    print "Error: Padding error. Try to put your pad character between quotes(i.e. '~'). NOTE: Length must equal 1."
     exit(1)
 
 #will print the sequence that has a lower and upper bound and an increment.
@@ -40,16 +50,24 @@ def verifyArg(argument,x):
         invalidInput()
     	exit(1)
 
+#will verify that the increment is positive, if negative the program exits
+def verifyIncrement(increment):
+    if increment <= 0:
+        print 'Error: Increment must be positive and non-zero.'
+        exit(1)
+
 #will go through the sequence and find the max width and return it
 def findMaxWidth(lower,inc,upper):
     maxWidth = 0
+    if inc == 0:
+	return maxWidth
+
     while lower <= upper:
 	if len(str(lower)) > maxWidth:
 	    maxWidth = len(str(lower))
         lower = lower + inc
-	if inc == 0:
-	    return maxWidth
     return maxWidth
+
 
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
@@ -60,68 +78,115 @@ group.add_argument("--version","-v", help="View the current version of sequ", ac
 group.add_argument("--separator","-s", help="Seperate the sequence by a string", action="count")
 group.add_argument("--format","-f", help = "Uses Floating-point Format",action = "count")
 group.add_argument("--equalwidth","-w", help = "Equalies the width by adding leading zeros", action = "count")
-
+group.add_argument("--words","-W", help = "Prints the sequence on a single line", action = "count")
+group.add_argument("--pad","-p", help = "Output the sequence with a single-char pad string.",action = "count")
 #Postionals
 parser.add_argument("string", nargs="?", default= " ",help = "A string that will seperate the numbers in the sequence")
 parser.add_argument("lower", nargs = "?", help = "Lower bounds of the sequence")
 parser.add_argument("upper", nargs = "?", help = "Upper bounds of the sequence")
+parser.add_argument("increment", nargs = "?", help = "Increment of the sequence")
 
 args = parser.parse_args()
-
+     
 #The definition of Arguments
 if args.version == 1:
     print"SEQU Version "+__VERSION
     exit(1)
 
+#Defines that variables based on the position of the argument.  
+if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words == 1 or args.pad == 1:
+    #provides a flag without arguments following the flag [i.e. -f ]
+    if len(argv) == 2:
+        invalidInput()
+    #provides one argument after a flag [i.e. -f upper]
+    elif len(argv) == 3:
+	if args.pad == 1:
+	    invalidInput()
+        upper = verifyArg(str(argv[2]),2)
+
+	string = __STRING
+        formatType = __FORMAT
+	#Sets the proper default lower/increment variables [i.e. float/int]
+        if isinstance(upper,float):
+            lower = __F_LOWER
+	    increment = __F_INCREMENT
+	else:
+	    lower = __LOWER
+	    increment = __INCREMENT
+    #provides two arguments after a flag [i.e. -f upper lower]
+    elif len(argv) == 4:        
+         #Handles the pad special case[i.e. -p 'a' upper]
+         if args.pad == 1:
+            upper = verifyArg(str(argv[3]),3)
+            if len(str(argv[2])) > 1:
+                invalidPadChar()
+            else:
+                padChar = str(argv[2])
+		#Sets the proper default lower/increment variables [i.e. float/int]
+		if isinstance(upper,float):
+		     increment = __F_INCREMENT
+		     lower = __F_LOWER
+                else:
+		     increment = __INCREMENT
+		     lower = __LOWER
+         else:
+             increment = __INCREMENT
+             lower = verifyArg(str(argv[2]),2)
+             upper = verifyArg(str(argv[3]),3)
+             string = __STRING
+             formatType = __FORMAT
+
+    #three arguments after a flag, will vary based on what flag
+    elif len(argv) == 5:
+	print str(argv[3]),'',str(argv[4]),')'
+	lower = verifyArg(str(argv[3]),3)
+        upper = verifyArg(str(argv[4]),4)
+        #[i.e. -s string lower upper]
+	if args.separator == 1:
+            string = str(argv[2])
+        #[i.e. -f format lower upper]
+        if args.format == 1:
+            formatType = str(argv[2])
+        #[i.e. -w lower increment upper] or [i.e. -W lower increment upper]
+        if args.equalwidth == 1 or args.words == 1:
+	    lower = verifyArg(str(argv[2]),2)
+	    increment = verifyArg(str(argv[3]),3)
+	    verifyIncrement(increment)
+            upper = verifyArg(str(argv[4]),4)
+	#[i.e. -p 'a' upper lower]
+	if args.pad == 1:
+	    print str(argv[2])
+	    print '->>', len(str(argv[2]))
+            if len(str(argv[2])) != 1:
+	        invalidPadChar()
+	    else:
+	        padChar = str(argv[2])
+	        increment = __INCREMENT        
+    else:
+	if args.pad == 1:
+	    if len(str(argv[2])) != 1:
+	        invalidPadChar()
+            else:
+	        padChar = str(argv[2])
+		lower = verifyArg(str(argv[3]),3)
+	        increment = verifyArg(str(argv[4]),4)
+		verifyIncrement(increment)
+		upper = verifyArg(str(argv[5]),5)
+	else:
+	    print 'Error: Too many arguments entered'
+	    exit(1)
+	    
+
 #-s and --separator, the default string separator is ""
 if args.separator == 1:
-    #has nothing after the -s flag
-    if len(argv) == 2:
-        invalidInput()
-    #has one argument after the -s flag
-    if len(argv) == 3:
-        upper = verifyArg(str(argv[2]),2)
-	lower = 1
-        string = ""
-    #has two arguments after the -s flag
-    elif len(argv) == 4:
-	lower = verifyArg(str(argv[2]),2)
-	upper = verifyArg(str(argv[3]),3)
-        string = ""		
-    #has three arguments after the -s flag. (string, lower, upper)
-    else:
-        lower = verifyArg(str(argv[3]),3)
-        upper = verifyArg(str(argv[4]),4)
-        string = str(argv[2])   
-
-    #Prints the sequence with the string as a separator and then exits
     while lower <= upper:
-        print lower
-	print string
-        lower+=1       
+         print lower,string,
+         lower+=1
     exit(1)
+  
 
 #-f and --format, the default format is '%g'
-if args.format == 1:
-    #nothing after the -f flag
-    if len(argv) == 2:
-        invalidInput()
-    #One argument after the -f flag
-    if len(argv) == 3:
-        upper = verifyArg(str(argv[2]),2)
-        lower = 1
-	formatType = "%g"
-    #Two arguments after the -f flag
-    elif len(argv) == 4:
-        lower = verifyArg(str(argv[2]),2)
-        upper = verifyArg(str(argv[3]),3)
-        formatType = "%g"
-    #has three arguments after the -f flag. (format,lower,upper)
-    else:
-        lower = verifyArg(str(argv[3]),3)
-        upper = verifyArg(str(argv[4]),4)
-	formatType = str(argv[2])
-    
+if args.format == 1: 
     #Accepted format types that this program accepts
     accepted = {'%g','%X','%e','%f'}
 
@@ -137,27 +202,8 @@ if args.format == 1:
 
 #-w and --equalwidth, default width is 1
 if args.equalwidth == 1:
-    #Nothing after the -w flag
-    if len(argv) == 2:
-	invalidInput()
-    #One argument after the -w flag
-    if len(argv) == 3:
-         lower = 1
-         upper = verifyArg(str(argv[2]),2)
-         increment = 1
-         maxWidth = findMaxWidth(0,1,verifyArg(str(argv[2]),2))
-    #Two arguments after the -w flag
-    elif len(argv) == 4:
-         lower = verifyArg(str(argv[2]),2)
-         upper = verifyArg(str(argv[3]),3)
-	 increment = 1
-	 maxWidth = findMaxWidth(verifyArg(str(argv[2]),2),1,verifyArg(str(argv[3]),3))
-    #Has three arguments after the -w flag. (lower,increment,upper)
-    else:
-	 lower = verifyArg(str(argv[2]),2)
-	 upper = verifyArg(str(argv[4]),4)
-	 increment = verifyArg(str(argv[3]),3)
-         maxWidth = findMaxWidth(verifyArg(str(argv[2]),2),verifyArg(str(argv[3]),3),verifyArg(str(argv[4]),4))
+    # Finds the max width of the sequence
+    maxWidth = findMaxWidth(lower,increment,upper)
 
     #Prints the sequence with equal width using zfill
     while lower <= upper:
@@ -165,9 +211,26 @@ if args.equalwidth == 1:
 	 lower = lower+increment
     exit(1)
 
+#-W and --words
+if args.words == 1:
+    while lower <= upper:
+        print lower,' ',
+	lower+=increment
+    exit(1)
+
+#-p and --pad
+if args.pad == 1:
+    #Finds the max width of the sequence
+    maxWidth = findMaxWidth(lower,increment,upper)
+
+    while lower <=upper:
+        print str(lower).rjust(maxWidth,padChar)
+        lower = lower+increment
+    exit(1)
+
 
 # Used to verify Invalid number of arguments
-if len(argv) <= 1 or len(argv) > 6:
+if len(argv) <= 1 or len(argv) >= 5:
     print('Error: Invalid number of arguments.')
     exit(1)
 
@@ -176,8 +239,8 @@ if len(argv) <= 1 or len(argv) > 6:
 if len(argv) == 2:
     try:
 	int(str(argv[1]))
-        lower = 1
-	increment = 1
+        lower = __LOWER
+	increment = __INCREMENT
     except:
 	try:
 	    float(str(argv[1]))
@@ -188,13 +251,13 @@ if len(argv) == 2:
     upper = verifyArg(str(argv[1]),1)
 #if there is not
 if len(argv) >= 3:
-
     lower = verifyArg(str(argv[1]),1)
     upper = verifyArg(str(argv[2]),2)
     #if there is an increment variable(lower,increment,upper)
     if len(argv) == 4:
         upper = verifyArg(str(argv[3]),3)
         increment = verifyArg(str(argv[2]),2)
+	verifyIncrement(increment)
     else: 
-        increment = 1
+        increment = __INCREMENT
 printSeq(lower,increment,upper)

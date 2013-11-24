@@ -6,7 +6,7 @@
 from sys import argv,exit
 import numbers,argparse,sys,string
 
-#Current version of sequ
+# Constants used in the program (Default values)
 __VERSION =  '1.0.0'
 __STRING = " "
 __LOWER = 1
@@ -14,6 +14,7 @@ __INCREMENT = 1
 __FORMAT = "%g"
 __F_LOWER = 1.0
 __F_INCREMENT = 1.0
+
 
 #Default invalid input error and exits
 def invalidInput():
@@ -94,7 +95,7 @@ parser.add_argument("upper", nargs = "?", help = "Upper bounds of the sequence")
 parser.add_argument("increment", nargs = "?", help = "Increment of the sequence")
 
 args = parser.parse_args()
-print len(argv)    
+    
 #The definition of Arguments
 if args.version == 1:
     print"SEQU Version "+__VERSION

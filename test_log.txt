@@ -5,16 +5,16 @@
 # Compliance Level 1
 Input				Expected output
 sequ -W	5 10			5 6 7 8 9 10
-
+Confirmed
 
 sequ -W 5			1 2 3 4 5
-
+Confirmed
 
 sequ -W				Error
+Confirmed
 
-
-sequ -W
-
+sequ -W 1 2 10			1   3   5   7   9
+Confirmed
 
 sequ -p '>' 5 10		>5 >6 >7 >8 >9 10 
 

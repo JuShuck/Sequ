@@ -138,7 +138,6 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words
 
     #three arguments after a flag, will vary based on what flag
     elif len(argv) == 5:
-	print str(argv[3]),'',str(argv[4]),')'
 	lower = verifyArg(str(argv[3]),3)
         upper = verifyArg(str(argv[4]),4)
         #[i.e. -s string lower upper]
@@ -252,7 +251,6 @@ if len(argv) == 2:
 #if there is not
 if len(argv) >= 3:
     lower = verifyArg(str(argv[1]),1)
-    upper = verifyArg(str(argv[2]),2)
     #if there is an increment variable(lower,increment,upper)
     if len(argv) == 4:
         upper = verifyArg(str(argv[3]),3)
@@ -260,4 +258,6 @@ if len(argv) >= 3:
 	verifyIncrement(increment)
     else: 
         increment = __INCREMENT
+        upper = verifyArg(str(argv[2]),2)
+
 printSeq(lower,increment,upper)

@@ -31,6 +31,12 @@ define a verify increment function to see if the increment is less than or equal
 	check to see if its less than or equal to 0
 		exit the program with an error message
 
+define a printPad function that will pad the left hand side with a special character.
+	while the lower is less than or equal to the upper
+		print the lower using 'rjust' with the padding character and using the max width
+		increment the lower variable with the increment
+
+
 if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
@@ -41,12 +47,21 @@ if there is a flag(i.e. -f,-s...)
 	if there are 2 arguments:
 		Print error message
 		exit
-	if there are 3 arguments
+	if there are 3 arguments [ --flag upper]
+		if the flag is for --pad/-p
+			exit the program with invalid argument number error
 		Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
 		Determine if it is a float or int
 			call the appropriate defaults (either float or int)
-	if there are 4 arguments
-		Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
+	if there are 4 arguments[ --flag lower upper] OR [--flag positional upper]
+		if the flag is for --pad/-p
+			check to see if the length of the pad is 1
+				exit the program if the length of positional is greater than 1.
+			assign the proper lower and increment flags.
+		if the flag is for --format/-f
+			assign the format type as the second argument.
+			assign the proper lower and increment flags based on upper bound given.
+		Otherwise Assign the upper and lower fields based on the [lower increment upper] format (will call default if not supplied by user)
                 Determine if it is a float or int
                         assigns the proper defaults (either int defaults or float defaults)
 
@@ -65,8 +80,11 @@ if there is a flag(i.e. -f,-s...)
                                 assign the value of the lower and upper
 				determine if the lower/upper is a float
 					assigns the proper defaults (either int defaults or float defaults)
-
-	handle the only case that could have 6 arguments (-p flag [-p lower inc upper])
+		if its a -P flag
+			Assign the value of the lower and upper variable
+			Determine if the lower/upper is a float
+				assigns the proper defaults (either int defaults or float defaults)
+	handle the only case that could have 6 arguments (-p 'pad char' lower inc upper])
 		if its a -p flag
 			if the padding character is invalid(MUST BE 1)
 				exit the program with an error
@@ -95,23 +113,26 @@ if argument -W is there
 	exit the program
 if argument -p is there
 	determine the max width of the sequence using maxWidth()
-	while the lower is less than or equal to the upper
-		print the lower using 'rjust' with the padding character and using the max width
-		increment the lower variable
-	exit the progtam
-	
+	call the printPad function with the parameters assigned
+	exit the program
+if argument -P is there
+	determine the max Width of the sequence using maxWidth()
+	call the printPad function with the parameters assigned. (pad char will be ' ' for -P flags)
+	exit the program
 
-if there are less than 2 arguments
+if there are less than 2 arguments or greater than or equal to 5
 	print error message
 	exit the program
 
-if the length does not have an argument flag(i.e less than or equal to 3 arguments
-	Try
-		Casting the arguments to integers
-		call the print function
-	catch
-		If you cannot make the cast conversion
-		Print error message
-		exit the program
+if there are no flags and the length of the arguments is 2.[sequ upper]
+	assign the upper variable
+	determine what type upper is
+		assign the proper defaults for the upper (i.e. float or int.)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if the length of the arguments is greater than 3
+	Assign the lower value
+	if the length is 4 [sequ lower inc upper]
+		assign the increment and upper variables
+	otherwise
+		use the defult increment and assign the upper variable
+call the defualt print function

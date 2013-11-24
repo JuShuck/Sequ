@@ -1,4 +1,4 @@
-# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013. Compliance level 1 is due on 11/11/2013
+	# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013. Compliance level 1 is due on 11/11/2013
 # Name: Justin Shuck
 # Copy right (c) Justin Shuck
 
@@ -24,6 +24,7 @@ def invalidInput():
 def invalidPadChar():
     print "Error: Padding error. Try to put your pad character between quotes(i.e. '~'). NOTE: Length must equal 1."
     exit(1)
+
 
 #will print the sequence that has a lower and upper bound and an increment.
 def printSeq(lower,increment,upper):
@@ -68,6 +69,11 @@ def findMaxWidth(lower,inc,upper):
         lower = lower + inc
     return maxWidth
 
+#will print a sequence with a pad using rjust.
+def printPad(lower,increment,upper,maxWidth,padChar):
+    while lower <= upper:
+        print str(lower).rjust(maxWidth,padChar)
+        lower = lower+increment
 
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
@@ -80,6 +86,7 @@ group.add_argument("--format","-f", help = "Uses Floating-point Format",action =
 group.add_argument("--equalwidth","-w", help = "Equalies the width by adding leading zeros", action = "count")
 group.add_argument("--words","-W", help = "Prints the sequence on a single line", action = "count")
 group.add_argument("--pad","-p", help = "Output the sequence with a single-char pad string.",action = "count")
+group.add_argument("--padspaces","-P", help = "Output the sequence with spaces on the left to be all equal width.",action = "count")
 #Postionals
 parser.add_argument("string", nargs="?", default= " ",help = "A string that will seperate the numbers in the sequence")
 parser.add_argument("lower", nargs = "?", help = "Lower bounds of the sequence")
@@ -87,14 +94,14 @@ parser.add_argument("upper", nargs = "?", help = "Upper bounds of the sequence")
 parser.add_argument("increment", nargs = "?", help = "Increment of the sequence")
 
 args = parser.parse_args()
-     
+print len(argv)    
 #The definition of Arguments
 if args.version == 1:
     print"SEQU Version "+__VERSION
     exit(1)
 
 #Defines that variables based on the position of the argument.  
-if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words == 1 or args.pad == 1:
+if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words == 1 or args.pad == 1 or args.padspaces == 1:
     #provides a flag without arguments following the flag [i.e. -f ]
     if len(argv) == 2:
         invalidInput()
@@ -154,13 +161,15 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words
             upper = verifyArg(str(argv[4]),4)
 	#[i.e. -p 'a' upper lower]
 	if args.pad == 1:
-	    print str(argv[2])
-	    print '->>', len(str(argv[2]))
-            if len(str(argv[2])) != 1:
+	    if len(str(argv[2])) != 1:
 	        invalidPadChar()
 	    else:
 	        padChar = str(argv[2])
-	        increment = __INCREMENT        
+	        increment = __INCREMENT       
+	#[i.e. -P upper inc lower]
+	if args.padspaces == 1:
+	    lower = verifyArg(str(argv[2]),2) 
+	    increment = verifyArg(str(argv[3]),3)
     else:
 	if args.pad == 1:
 	    if len(str(argv[2])) != 1:
@@ -221,12 +230,15 @@ if args.words == 1:
 if args.pad == 1:
     #Finds the max width of the sequence
     maxWidth = findMaxWidth(lower,increment,upper)
-
-    while lower <=upper:
-        print str(lower).rjust(maxWidth,padChar)
-        lower = lower+increment
+    printPad(lower,increment,upper,maxWidth,padChar)
     exit(1)
 
+#-P and --padspaces
+if args.padspaces == 1:
+    #Finds max width of the sequence
+    maxWidth = findMaxWidth(lower,increment,upper)
+    printPad(lower,increment,upper,maxWidth,' ')
+    exit(1)
 
 # Used to verify Invalid number of arguments
 if len(argv) <= 1 or len(argv) >= 5:

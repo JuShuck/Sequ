@@ -75,8 +75,9 @@ def printPad(lower,increment,upper,maxWidth,padChar):
     while lower <= upper:
         print str(lower).rjust(maxWidth,padChar)
         lower = lower+increment
+
 #Turns any backslash argument into its form
-def backSlash(string):
+def fixBackSlash(string):
     backSlashN = string.replace('\\n','\n') 
     backSlashT = backSlashN.replace('\\t','\t')
     backSlashA = backSlashT.replace('\\a','\a')
@@ -85,6 +86,7 @@ def backSlash(string):
     backSlashV = backSlashR.replace('\\v','\v')
     backSlash = backSlashV.replace('\\\\','\\')
     return backSlash
+
 #the implementation for -W/--words. seperates the string and pringts the new string
 def wordsImplementation(word):
     stringWord = str(word)
@@ -125,6 +127,18 @@ if args.version == 1:
 
 #Defines that variables based on the position of the argument.  
 if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad == 1 or args.padspaces == 1:
+
+    formatTypes = ['\\n','\\t','\\a','\\f','\\r','\\v','\\\\']
+    # Determines PadChar for -p/--pad 
+    if args.pad == 1:
+        string = str(argv[2])
+	#checks to see if there is a format type that is being used as padding
+        if string in formatTypes or len(string) == 1:
+            padChar = string
+        else:
+            invalidPadChar()
+
+
     #provides a flag without arguments following the flag [i.e. -f ]
     if len(argv) == 2:
         invalidInput()
@@ -148,17 +162,13 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
          #Handles the pad special case[i.e. -p 'a' upper]
          if args.pad == 1:
             upper = verifyArg(str(argv[3]),3)
-            if len(str(argv[2])) > 1:
-                invalidPadChar()
+            #Sets the proper default lower/increment variables [i.e. float/int]
+            if isinstance(upper,float):
+                increment = __F_INCREMENT
+                lower = __F_LOWER
             else:
-                padChar = str(argv[2])
-		#Sets the proper default lower/increment variables [i.e. float/int]
-		if isinstance(upper,float):
-		     increment = __F_INCREMENT
-		     lower = __F_LOWER
-                else:
-		     increment = __INCREMENT
-		     lower = __LOWER
+                increment = __INCREMENT
+                lower = __LOWER
          else:
              increment = __INCREMENT
              lower = verifyArg(str(argv[2]),2)
@@ -184,25 +194,17 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
             upper = verifyArg(str(argv[4]),4)
 	#[i.e. -p 'a' upper lower]
 	if args.pad == 1:
-	    if len(str(argv[2])) != 1:
-	        invalidPadChar()
-	    else:
-	        padChar = str(argv[2])
-	        increment = __INCREMENT       
+	    increment = __INCREMENT      
 	#[i.e. -P upper inc lower]
 	if args.padspaces == 1:
 	    lower = verifyArg(str(argv[2]),2) 
 	    increment = verifyArg(str(argv[3]),3)
     else:
 	if args.pad == 1:
-	    if len(str(argv[2])) != 1:
-	        invalidPadChar()
-            else:
-	        padChar = str(argv[2])
-		lower = verifyArg(str(argv[3]),3)
-	        increment = verifyArg(str(argv[4]),4)
-		verifyIncrement(increment)
-		upper = verifyArg(str(argv[5]),5)
+	    lower = verifyArg(str(argv[3]),3)
+	    increment = verifyArg(str(argv[4]),4)
+	    verifyIncrement(increment)
+            upper = verifyArg(str(argv[5]),5)
 	else:
 	    print 'Error: Too many arguments entered'
 	    exit(1)
@@ -211,7 +213,7 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
 #-s and --separator, the default string separator is ""
 if args.separator == 1:
     while lower <= upper:
-         print lower,backSlash(string),
+         print lower,fixBackSlash(string),
          lower+=1
     exit(1)
   
@@ -255,7 +257,8 @@ if args.words == 1:
 if args.pad == 1:
     #Finds the max width of the sequence
     maxWidth = findMaxWidth(lower,increment,upper)
-    printPad(lower,increment,upper,maxWidth,padChar)
+    fixedPadChar = fixBackSlash(padChar)
+    printPad(lower,increment,upper,maxWidth,fixedPadChar)
     exit(1)
 
 #-P and --padspaces

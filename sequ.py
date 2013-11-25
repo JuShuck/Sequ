@@ -75,6 +75,28 @@ def printPad(lower,increment,upper,maxWidth,padChar):
     while lower <= upper:
         print str(lower).rjust(maxWidth,padChar)
         lower = lower+increment
+#Turns any backslash argument into its form
+def backSlash(string):
+    backSlashN = string.replace('\\n','\n') 
+    backSlashT = backSlashN.replace('\\t','\t')
+    backSlashA = backSlashT.replace('\\a','\a')
+    backSlashF = backSlashA.replace('\\f','\f')
+    backSlashR = backSlashF.replace('\\r','\r')
+    backSlashV = backSlashR.replace('\\v','\v')
+    backSlash = backSlashV.replace('\\\\','\\')
+    return backSlash
+#the implementation for -W/--words. seperates the string and pringts the new string
+def wordsImplementation(word):
+    stringWord = str(word)
+    wordLen = len(word) -1
+    finalString = ""
+    for x in range(0,wordLen):
+        finalString += stringWord[x]
+        finalString += " "
+    finalString += stringWord[wordLen]
+    print finalString
+    return
+
 
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
@@ -102,7 +124,7 @@ if args.version == 1:
     exit(1)
 
 #Defines that variables based on the position of the argument.  
-if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words == 1 or args.pad == 1 or args.padspaces == 1:
+if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad == 1 or args.padspaces == 1:
     #provides a flag without arguments following the flag [i.e. -f ]
     if len(argv) == 2:
         invalidInput()
@@ -189,7 +211,7 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.words
 #-s and --separator, the default string separator is ""
 if args.separator == 1:
     while lower <= upper:
-         print lower,string,
+         print lower,backSlash(string),
          lower+=1
     exit(1)
   
@@ -222,9 +244,11 @@ if args.equalwidth == 1:
 
 #-W and --words
 if args.words == 1:
-    while lower <= upper:
-        print lower,' ',
-	lower+=increment
+    argLen = len(argv)
+    #Prints all the arguments in proper form
+    for x in range(2,argLen):
+        word = str(argv[x])
+        wordsImplementation(word)
     exit(1)
 
 #-p and --pad

@@ -36,6 +36,21 @@ define a printPad function that will pad the left hand side with a special chara
 		print the lower using 'rjust' with the padding character and using the max width
 		increment the lower variable with the increment
 
+if there is a backslash for the -s/seperate argument
+      if the string is a \n set it in the proper form
+      if the string is a \t set it in the proper form
+      if the string is a \a set it in the proper form
+      if the string is a \f set it in the proper form
+      if the string is a \r set it in the proper form
+      if the string is a \v set it in the proper form
+      if the string is a \\ set it in the proper form
+
+create the implementation for the words function. 
+      find the length of the given string
+      from 0 to the word length
+           create a string that has a space between each word
+	   add the blank space to the word
+      print the final string
 
 if there are not the correct number of arguments OR invalid argument
     print error message

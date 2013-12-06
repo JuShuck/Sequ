@@ -3,8 +3,8 @@
 # Copy Right(c) Justin Shuck
 
 
-# Compliance Level 2
-
+# Compliance Level 3 & 4
+############################
 define print function that take a lower, increment and upper parameters
 	While the lower is less than or equal to the upper
 		print the lower
@@ -52,11 +52,73 @@ create the implementation for the words function.
 	   add the blank space to the word
       print the final string
 
+create an character to int function
+	try turning the character to an integer
+	if you cant, return an error
+	return the integer
+
+create a int to character function
+	return numerical value of the character
+
+create a mismatching bounds function
+	if the lower and upper are both upper-case
+		do nothing
+	else if the lower and upper are both lower-case
+		do nothing
+	otherwise return an error
+
+define a print alpha sequence
+	if the lower and upper arguments are 'lower case'
+		print lower in lower case
+		increment the lower
+	else if the lower and upper arguments are 'upper case'
+		print lower in upper case
+		increment the lower
+	else
+		error, mismatching bounds
+
+define a print roman sequence
+
+#########################
+
+
 if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
 
+    
+handle the --formatword portion of the program
+	append arguments into a list
+	figure out the Type following the -F flag
 
+	if there are < 3 arguments:
+		Error(not enough arguments)
+	else if there are 4 arguments: [ --formatword TYPE upper]
+		if alpha
+			determine variables
+			call alpha seq
+		if arabic
+			determine variables
+		if floating	
+
+	else if there are 5 arguments: [--formatword TYPE lower upper]
+		if alpha
+			determine variables
+			call alpha seq
+		if arabic
+			determine variables
+		if floating	
+
+	else if there are 6 arguments: [--formatword TYPE lower inc upper]
+		if alpha
+			determine variables
+			call alpha seq
+		if arabic
+			determine variables
+		if floating	
+	else
+		Error(too many arguments)
+	call seq print
 
 if there is a flag(i.e. -f,-s...)
 	if there are 2 arguments:

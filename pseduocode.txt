@@ -5,6 +5,9 @@
 
 # Compliance Level 3 & 4
 ############################
+
+create a numeral map that will be used for the roman seq
+
 define print function that take a lower, increment and upper parameters
 	While the lower is less than or equal to the upper
 		print the lower
@@ -76,8 +79,26 @@ define a print alpha sequence
 		increment the lower
 	else
 		error, mismatching bounds
+define an int to roman function
+	if the number is less than or equal to zero
+		error
+	while there is valid input in the numeral map
+		find the number that fits into the integer
+		append it to a list
+		subtract the number from the input
+	return the list as a string
+
+define a roman to int function
+	turn the input in unicode
+	while there is a valid input in the numeral map
+		find the numeral and add the integer value to a result variable
+	return the result
 
 define a print roman sequence
+	while lower is less than or equal to upper
+		print the output as roman
+		increment the lower
+
 
 #########################
 

@@ -17,13 +17,8 @@ __F_INCREMENT = 1.0
 
 
 #Default invalid input error and exits
-def invalidInput():
-    print 'Error: Invalid Input.'
-    exit(1)
-
-#Handles the invalid pad character error and exits
-def invalidPadChar():
-    print "Error: Padding error. Try to put your pad character between quotes(i.e. '~'). NOTE: Length must equal 1."
+def defaultError(string):
+    print 'ERROR:',string
     exit(1)
 
 
@@ -49,7 +44,7 @@ def verifyArg(argument,x):
 	argument = float(str(argv[x]))
 	return argument
     except ValueError:
-        invalidInput()
+        defaultError('Invalid Input.')
     	exit(1)
 
 #will verify that the increment is positive, if negative the program exits
@@ -98,6 +93,57 @@ def wordsImplementation(word):
     finalString += stringWord[wordLen]
     print finalString
     return
+#converts a single char to its integer form
+def charToInt(character):
+    try:
+        integer = ord(character)
+    except:
+        defaultError("1Invalid Input")
+    return integer
+
+#converts an integer to its char form
+def intToChar(integer):
+    try:
+        character = ch(integer)
+    except:
+        defaultError('2')
+
+#verifies that the argument is not an integer
+def verifyChar(argument):
+    holder = argument
+    #Checks to see if the argument provided is an integer
+    try:
+        holder = int(argument)
+    except:
+        pass
+    if isinstance(holder,int):
+        defaultError('Invalid input. Input accepts single length characters.')
+    return holder
+
+#prints the alpha sequence baased on if it is upper case or lower case
+def alphaSeq(lower,increment,upper):
+    # [A-Z] = [65 - 90] 
+    print lower, '/', increment,'/', upper
+    if 65 <= lower <= 90 and 65<= upper <= 90:
+        while lower <= upper:
+            print chr(lower)
+            lower = lower + increment
+    # [a - z] = [97 - 122]
+    elif 97 <= lower <= 122 and 97 <= upper <=122:
+        while lower <= upper:
+            print chr(lower)
+            lower = lower + increment
+    else:
+        defaultError('Invalid character detected')
+
+#checks to make sure that both arguments are upper case or lower case
+def checkMismatchingBounds(lower,upper):
+    if chr(upper).isupper() and chr(lower).isupper():
+        pass
+    elif chr(upper).islower() and chr(lower).islower():
+        pass
+    else:
+       defaultError('Mismatch characters.')
 
 
 # Define arguments that are handled in this program
@@ -112,6 +158,7 @@ group.add_argument("--equalwidth","-w", help = "Equalies the width by adding lea
 group.add_argument("--words","-W", help = "Prints the sequence on a single line", action = "count")
 group.add_argument("--pad","-p", help = "Output the sequence with a single-char pad string.",action = "count")
 group.add_argument("--padspaces","-P", help = "Output the sequence with spaces on the left to be all equal width.",action = "count")
+group.add_argument("--formatword","-F", help = "Prints the arguments as the format specificified[arabic,floating,alpha,roman].",action = "count")
 #Postionals
 parser.add_argument("string", nargs="?", default= " ",help = "A string that will seperate the numbers in the sequence")
 parser.add_argument("lower", nargs = "?", help = "Lower bounds of the sequence")
@@ -125,6 +172,92 @@ if args.version == 1:
     print"SEQU Version "+__VERSION
     exit(1)
 
+#Handles the format word case
+if args.formatword == 1:
+    acceptableTypes = ['arabic','ARABIC','floating','FLOATING','alpha','ALPHA']
+    try:
+        if str(argv[2]) in acceptableTypes:
+            formatType = str(argv[2]).lower()
+    except:
+        defaultError('Invalid formatword type. Accepted types: [arabic,floating,alpha,roman]')
+
+
+    #[-F TYPE Upper]
+    if len(argv) == 4:
+        if formatType == 'arabic':
+            upper = verifyArg(str(argv[3]),3)
+            upper = int(upper)
+            lower = __LOWER
+            increment = __INCREMENT
+        elif formatType == 'floating':
+            upper = verifyArg(str(argv[3]),3)
+            upper = float(upper)
+            lower = __F_LOWER
+            increment = __F_INCREMENT
+        elif formatType == 'alpha':
+            upper = verifyChar(str(argv[3]))
+            upper = charToInt(upper)
+            if chr(upper).isupper():
+                lower = charToInt('A')
+            else:    
+                lower = charToInt('a')
+            increment = 1
+    #[-F TYPE Lower Upper]
+    elif len(argv) == 5:
+        if formatType == 'arabic':
+            upper = verifyArg(str(argv[4]),4)
+            upper = int(upper)
+            lower = __LOWER
+            increment = __INCREMENT
+        elif formatType == 'floating':
+            upper = verifyArg(str(argv[4]),4)
+            upper = float(upper)
+            lower = __F_LOWER
+            increment = __F_INCREMENT
+        elif formatType == 'alpha':
+            upper = verifyChar(str(argv[4]))
+            upper = charToInt(upper)
+            checkMismatchingBounds(lower,upper)
+            increment = 1
+    #[-F TYPE Lower Increment Upper]
+    elif len(argv) == 6:
+        if formatType == 'arabic':
+            upper = verifyArg(str(argv[5]),5)
+            upper = int(upper)
+            lower = verifyArg(str(argv[3]),3)
+            lower = int(lower)
+            increment = verifyArg(str(argv[4]),4)
+            increment = int(increment)
+            verifyIncrement(increment)
+        elif formatType == 'floating':
+            try:
+                lower = float(str(argv[3]))
+                upper = float(str(argv[5]))
+                increment = float(str(argv[4]))       
+            except:
+                defaultError('Invalid character detected.')
+        elif formatType == 'alpha':
+            lower = verifyChar(str(argv[3]))
+            upper = verifyChar(str(argv[5]))
+            try:
+            	increment = int(str(argv[4]))
+            except:
+            	defaultError('Increment must be an integer')
+            upper = charToInt(upper)
+            lower = charToInt(lower)
+            checkMismatchingBounds(lower,upper)
+    else:
+        defaultError('Too many arguments.')
+
+
+    if formatType == 'alpha':
+        alphaSeq(lower,increment,upper)
+    else:
+        printSeq(lower,increment,upper)
+    exit(1)
+
+
+
 #Defines that variables based on the position of the argument.  
 if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad == 1 or args.padspaces == 1:
 
@@ -136,16 +269,16 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
         if string in formatTypes or len(string) == 1:
             padChar = string
         else:
-            invalidPadChar()
+            defaultError("Padding error. Try to put your pad character between quotes(i.e. '~'). NOTE: Length must equal 1.")
 
 
     #provides a flag without arguments following the flag [i.e. -f ]
     if len(argv) == 2:
-        invalidInput()
+        defaultError('Invalid Input.')
     #provides one argument after a flag [i.e. -f upper]
     elif len(argv) == 3:
 	if args.pad == 1:
-	    invalidInput()
+            defaultError('Invalid Input.')
         upper = verifyArg(str(argv[2]),2)
 
 	string = __STRING
@@ -169,6 +302,10 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
             else:
                 increment = __INCREMENT
                 lower = __LOWER
+         elif args.separator == 1:
+             upper = verifyArg(str(argv[3]),3)
+             string = str(argv[2])
+             lower = __LOWER
          else:
              increment = __INCREMENT
              lower = verifyArg(str(argv[2]),2)
@@ -286,7 +423,7 @@ if len(argv) == 2:
             lower = 1.0
 	    increment = 1.0
         except:
-            invalidInput()
+            defaultError('Invalid Input.')
     upper = verifyArg(str(argv[1]),1)
 #if there is not
 if len(argv) >= 3:

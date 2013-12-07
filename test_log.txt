@@ -14,6 +14,12 @@ sequ a 2 k							a
 									g
 									i
 									k
+sequ I III							I
+									II
+									III
+sequ I II V							I
+									III
+									V
 sequ -F a k							ERORR (invalid format type)
 sequ -F alpha C                     A
 									B
@@ -38,3 +44,20 @@ sequ -F floating 1 a 				Error (mismatching bounds)
 sequ -F floating 1 .5 2				1.0
 									1.5
 									2.0
+sequ -F I III						I
+									II
+									III
+sequ -F roman						Error
+sequ -F roman 1 4					I
+									II
+									III
+									IV
+sequ -F RoMaN 1 3 10				I
+									IV
+									VII
+									X
+sequ -F roman I III X				I
+									IV
+									VII
+									X
+									

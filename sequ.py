@@ -12,9 +12,14 @@ __STRING = " "
 __LOWER = 1
 __INCREMENT = 1
 __FORMAT = "%g"
-__F_LOWER = 1.0
-__F_INCREMENT = 1.0
 
+
+
+#Roman numeral dictionary used to print the sequence in roman
+numeral_map = zip(
+    (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
+    ('M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
+)
 
 #Default invalid input error and exits
 def defaultError(string):
@@ -120,6 +125,7 @@ def verifyChar(argument):
         defaultError('Invalid input. Input accepts single length characters.')
     return holder
 
+    
 #prints the alpha sequence baased on if it is upper case or lower case
 def alphaSeq(lower,increment,upper):
     # [A-Z] = [65 - 90] 
@@ -144,6 +150,33 @@ def checkMismatchingBounds(lower,upper):
         pass
     else:
        defaultError('Mismatch characters.')
+
+#converts a positive, non-zero integer into a roman numeral string
+def intToRoman(i):
+    result = []
+    if(i <= 0):
+        defaultError('Integer must be positive and non-zero.')
+    for integer, numeral in numeral_map:
+        count = int(i / integer)
+        result.append(numeral * count)
+        i -= integer * count
+    return ''.join(result)
+
+#converts a roman numeral string to an integer. If it is not a valid roman numeral returns 0.
+def romanToInt(n):
+    n = unicode(n).upper()
+    i = result = 0
+    for integer, numeral in numeral_map:
+        while n[i:i + len(numeral)] == numeral:
+            result += integer
+            i += len(numeral)
+    return result
+#prints the sequence in roman
+def romanSeq(lower,increment,upper):
+    while lower <= upper:
+        print intToRoman(lower)
+        lower += increment
+    exit(1)
 
 
 # Define arguments that are handled in this program
@@ -174,14 +207,14 @@ if args.version == 1:
 
 #Handles the format word case
 if args.formatword == 1:
-    acceptableTypes = ['arabic','ARABIC','floating','FLOATING','alpha','ALPHA']
+    acceptableTypes = ['arabic','ARABIC','floating','FLOATING','alpha','ALPHA','roman','ROMAN']
     try:
-        if str(argv[2]) in acceptableTypes:
+        if str(argv[2])in acceptableTypes:
             formatType = str(argv[2]).lower()
     except:
         defaultError('Invalid formatword type. Accepted types: [arabic,floating,alpha,roman]')
 
-
+    # Will find the formatType and assign the values for lower,increment and upper
     #[-F TYPE Upper]
     if len(argv) == 4:
         if formatType == 'arabic':
@@ -192,8 +225,8 @@ if args.formatword == 1:
         elif formatType == 'floating':
             upper = verifyArg(str(argv[3]),3)
             upper = float(upper)
-            lower = __F_LOWER
-            increment = __F_INCREMENT
+            lower = float(__LOWER)
+            increment = float(__INCREMENT)
         elif formatType == 'alpha':
             upper = verifyChar(str(argv[3]))
             upper = charToInt(upper)
@@ -202,23 +235,51 @@ if args.formatword == 1:
             else:    
                 lower = charToInt('a')
             increment = 1
+        elif formatType == 'roman':
+            try:
+                upper = int(argv[3])
+                lower = __LOWER
+                increment = __INCREMENT
+            except:
+                upper = str(argv[3]) 
+                #checks for valid roman numeral     
+                if romanToInt(upper) == 0:
+                    defaultError('Invalid roman Numeral.')
+                lower = intToRoman(__LOWER)
+                increment = intToRoman(__INCREMENT)
     #[-F TYPE Lower Upper]
     elif len(argv) == 5:
         if formatType == 'arabic':
+            lower = verifyArg(str(argv[3]),3)
+            lower = int(lower)
             upper = verifyArg(str(argv[4]),4)
             upper = int(upper)
-            lower = __LOWER
             increment = __INCREMENT
         elif formatType == 'floating':
-            upper = verifyArg(str(argv[4]),4)
-            upper = float(upper)
-            lower = __F_LOWER
-            increment = __F_INCREMENT
+            try:
+                lower = float(str(argv[3]))
+                upper = float(str(argv[4]))      
+                increment = float(__INCREMENT)
+            except:
+                defaultError('Invalid character detected.')
         elif formatType == 'alpha':
+            lower = verifyChar(str(argv[3]))
             upper = verifyChar(str(argv[4]))
+            lower = charToInt(lower)
             upper = charToInt(upper)
             checkMismatchingBounds(lower,upper)
-            increment = 1
+            increment = __INCREMENT
+        elif formatType == 'roman':
+            try:
+                lower = int(argv[3])
+                upper = int(argv[4])
+                increment = 1
+            except: 
+                lower = str(argv[3])
+                upper = str(argv[4])
+                if romanToInt(upper) == 0 or romanToInt(lower) == 0:
+                    defaultError('Mixed input. Must enter int, int or roman, roman.')
+                increment = intToRoman(__INCREMENT)
     #[-F TYPE Lower Increment Upper]
     elif len(argv) == 6:
         if formatType == 'arabic':
@@ -246,16 +307,36 @@ if args.formatword == 1:
             upper = charToInt(upper)
             lower = charToInt(lower)
             checkMismatchingBounds(lower,upper)
+        elif formatType == 'roman':
+            try:
+                lower = int(argv[3])
+                increment = int(argv[4])
+                upper = int(argv[5])
+            except:
+                lower = str(argv[3])
+                increment = str(argv[4])
+                upper = str(argv[5])
+                if romanToInt(upper) == 0 or romanToInt(lower) == 0 or romanToInt(increment) == 0:
+                    defaultError('Mixed input. Must enter int, int, int or roman, roman, roman.')   
     else:
         defaultError('Too many arguments.')
 
 
     if formatType == 'alpha':
         alphaSeq(lower,increment,upper)
+    elif formatType == 'roman':
+        if isinstance(lower,int) and isinstance(increment,int) and isinstance(upper,int):
+            romanSeq(lower,increment,upper)
+        elif isinstance(lower,str) and isinstance(increment,str) and isinstance(upper,str):
+            lower = romanToInt(lower)
+            upper = romanToInt(upper)
+            increment = romanToInt(increment)
+            romanSeq(lower,increment,upper)
+        else:
+            defaultError('Mixed input.')
     else:
         printSeq(lower,increment,upper)
-    exit(1)
-
+exit(1)
 
 
 #Defines that variables based on the position of the argument.  
@@ -279,14 +360,15 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
     elif len(argv) == 3:
 	if args.pad == 1:
             defaultError('Invalid Input.')
+            defaultError('Invalid Input.')
         upper = verifyArg(str(argv[2]),2)
 
 	string = __STRING
         formatType = __FORMAT
 	#Sets the proper default lower/increment variables [i.e. float/int]
         if isinstance(upper,float):
-            lower = __F_LOWER
-	    increment = __F_INCREMENT
+            lower = float(__LOWER)
+	    increment = float(__INCREMENT)
 	else:
 	    lower = __LOWER
 	    increment = __INCREMENT
@@ -297,8 +379,8 @@ if args.separator == 1 or args.format == 1 or args.equalwidth == 1 or args.pad =
             upper = verifyArg(str(argv[3]),3)
             #Sets the proper default lower/increment variables [i.e. float/int]
             if isinstance(upper,float):
-                increment = __F_INCREMENT
-                lower = __F_LOWER
+                increment = float(__INCREMENT)
+                lower = float(__LOWER)
             else:
                 increment = __INCREMENT
                 lower = __LOWER

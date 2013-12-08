@@ -1,5 +1,4 @@
-# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013. Compliance level 1 is due on 11/11/2013
-# Name: Justin Shuck
+# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels.
 # Copy right (c) Justin Shuck
 
 
@@ -12,12 +11,15 @@ __STRING = " "
 __LOWER = 1
 __INCREMENT = 1
 __FORMAT = "%g"
+__SEPARATOR = ' '
 
 #Roman numeral dictionary used to print the sequence in roman
 numeral_map = zip(
     (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
     ('M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
 )
+
+#Verifys if the argument passed in is an int. True = integer, False = Not integer
 def isInt(num):
     try:
         num = int(num)
@@ -25,6 +27,7 @@ def isInt(num):
     except:
         return False
 
+#Verifys if the argument passed in is a float OR int. True = float,int, False = Not float,int
 def isFloat(num):
     try:
         num = float(num)
@@ -154,12 +157,14 @@ def alphaSeq(lower,increment,upper):
     else:
         defaultError('Invalid character detected')
     exit(1)
+#Used to find the other 'bound' of a given char input. Will ensure that the sequence is all in upper-case or lower-case
 def findOtherBound(boundOne):
     if chr(boundOne).isupper():
         boundTwo = charToInt('A')
     else:    
         boundTwo = charToInt('a')
     return boundTwo
+
 #checks to make sure that both arguments are upper case or lower case
 def checkMismatchingBounds(lower,upper):
     if chr(upper).isupper() and chr(lower).isupper():
@@ -189,6 +194,7 @@ def romanToInt(n):
             result += integer
             i += len(numeral)
     return result
+
 #prints the sequence in roman
 def romanSeq(lower,increment,upper):
     while lower <= upper:
@@ -220,6 +226,7 @@ def computeRoman(lower,increment,upper):
     else:
         defaultError('Invalid roman character in input')
     romanSeq(lower,increment,upper)
+#Puts the lines of a file into a list. If the file is not found the program terminates early
 def putLinesInList(fi):
     try:
         with open(fi) as f:
@@ -228,7 +235,8 @@ def putLinesInList(fi):
     except:
     	defaultError('File not found.')
 
-def printFileSeq(lower,increment,lineList):
+#Prints the lines of the file with an arabic or floating sequence
+def printFileSeq(lower,increment,lineList,separator):
     #Finds the max width of the last sequence number
     listLen = len(lineList)-1
     largest = lower
@@ -237,11 +245,12 @@ def printFileSeq(lower,increment,lineList):
         largest +=increment
     maxWidth = len(str(largest))
     for first,line in enumerate(lineList):
-        print str(lower).rjust(maxWidth,' '),' ',line
+        print str(lower).rjust(maxWidth,' '),separator,line
         lower +=increment
     exit(1)
 
-def printFileAlphaSeq(lower,increment,lineList):
+#Prints the lines of the file with an alpha sequence
+def printFileAlphaSeq(lower,increment,lineList,separator):
     #Finds the max width of the last sequence number
     maxWidth = 1
     if not isInt(increment):
@@ -251,7 +260,7 @@ def printFileAlphaSeq(lower,increment,lineList):
     if chr(lower).isupper():
         flag = True
     for first,line in enumerate(lineList):
-        print str(chr(lower)).rjust(maxWidth,' '),' ',line
+        print str(chr(lower)).rjust(maxWidth,' '),separator,line
         lower +=increment
         #Resets the alpha seq. flag = True means [A-Z], flag = False [a - z]
         if flag:
@@ -262,10 +271,8 @@ def printFileAlphaSeq(lower,increment,lineList):
                 lower = 97
     exit(1)
 
-
-def printFileRomanSeq(lower,increment,lineList):
-    #Finds the max width of the last sequence number
-    print lower,'.',increment
+#Prints the lines of the file with a roman sequence
+def printFileRomanSeq(lower,increment,lineList,separator):
     listLen = len(lineList)
     lowCopy = lower
     result = []
@@ -273,63 +280,124 @@ def printFileRomanSeq(lower,increment,lineList):
         listLen -= 1
         result.append(intToRoman(lowCopy))
         lowCopy += increment
-    print result
     maxlength = max(len(s) for s in result)
-    print maxlength
     for first,line in enumerate(lineList):
-        print str(intToRoman(lower)).rjust(maxlength,' '),' ',line
+        print str(intToRoman(lower)).rjust(maxlength,' '),separator,line
         lower +=increment
     exit(1)
 
+#Handles the cases that include a specific formatType. [i.e. FORMAT FILE lower increment separator]
+def determineWithFormatType(formatType,lower,increment,separator,fileList):
+    #Integer
+    if formatType == 'arabic':
+        if isFloat(lower) and isFloat(increment):
+            verifyIncrement(int(math.floor(float(increment))))
+            printFileSeq(int(math.floor(float(lower))),int(math.floor(float(increment))),fileList,separator)
+        else:
+            defaultError('Invalid Input.')
+    #Float
+    if formatType == 'floating':
+        if isFloat(lower) and isFloat(increment):
+            verifyIncrement(float(increment))
+            printFileSeq(float(lower),float(increment),fileList,separator)
+        else:
+            defaultError('Invalid Input.')
+    if formatType == 'alpha':
+        #Verifys that lower is [A-Z] or [a-z]
+        if len(lower) != 1 or ord(lower) < 65 or ord(lower) > 90 and ord(lower) < 97 or ord(lower) > 122:
+            defaultError('Invalid Input.')
+        if not isInt(increment):
+            defaultError('Invalid Input.')
+        printFileAlphaSeq(charToInt(lower),int(increment),fileList,separator)
+    if formatType == 'roman':
+        #Assigns the lower correctly
+        if isInt(lower):
+            lower = int(lower)
+        elif romanToInt(lower) != 0:
+            lower = romanToInt(lower)
+        else:
+            defaultError('Invalid roman character in input')
+        #Assigns the increment correctly
+        if isInt(increment):
+            increment = int(increment)
+        elif romanToInt(increment) != 0:
+            increment = romanToInt(increment)
+        else:
+            defaultError('Invalid roman character in input')
+        verifyIncrement(increment)
+        printFileRomanSeq(lower,increment,fileList,separator)
+    defaultError('Invalid Input.')
 
-#myList = putLinesInList()
+#Handles the case that doesnt have an implicit format type [i.e. FILE lower increment separator]
+def determine(lower,increment,separator,fileList):
+    #Integer
+    if isInt(lower) and isInt(increment):
+        printFileSeq(int(lower),int(increment),fileList,separator)
+    #Float
+    elif isFloat(lower) and isFloat(increment):
+        printFileSeq(float(lower),float(increment),fileList,separator)
+    #Alpha
+    elif len(lower) == 1 and not isInt(lower) and not isFloat(lower):
+        if isInt(increment):
+            verifyIncrement(int(increment))
+            printFileAlphaSeq(charToInt(lower),int(increment),fileList,separator)
+        else:
+            defaultError('Increment must be a positive,non-zero integer.')
+    #Roman
+    elif romanToInt(lower) != 0 or romanToInt(increment) != 0:
+        if romanToInt(increment) == 0:
+            if isInt(increment):
+                printFileRomanSeq(romanToInt(lower),int(increment),fileList,separator)
+            else:
+                defaultError('Invalid Input')
+        elif romanToInt(lower) == 0 and isInt(lower):
+            printFileRomanSeq(int(lower),romanToInt(increment),fileList,separator)
+        else:
+            printFileRomanSeq(romanToInt(lower),romanToInt(increment),fileList,separator)
+    else:
+        defaultError('Invalid Input.') 
 
-#for first, second in enumerate(myList):
- #   print first+1,'.',second
-#printFileSeq(__LOWER,3,myList)
-#exit(1)    
-#for i in myList:
-#    print str(i).join(map(str,putLinesInList()))
-#    i +=1
-#print '\n'.join(map(str,putLinesInList()))
 
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
 
 group = parser.add_mutually_exclusive_group()
 
-
 group.add_argument("--version","-v", help="View the current version of sequ", action="count")
-group.add_argument("--separator","-s", help="Seperate the sequence by a string", action="count")
+parser.add_argument("--separator","-s", help="Seperate the sequence by a string", action="count")
 group.add_argument("--format","-f", help = "Uses Floating-point Format",action = "count")
 group.add_argument("--equalwidth","-w", help = "Equalies the width by adding leading zeros", action = "count")
 group.add_argument("--words","-W", help = "Prints the sequence on a single line", action = "count")
 group.add_argument("--pad","-p", help = "Output the sequence with a single-char pad string.",action = "count")
 group.add_argument("--padspaces","-P", help = "Output the sequence with spaces on the left to be all equal width.",action = "count")
-group.add_argument("--formatword","-F", help = "Prints the arguments as the format specificified[arabic,floating,alpha,roman].",action = "count")
-group.add_argument("--numberlines","-n",help = "Prints the contents of a file numbered with parameters entered.( [FORMAT][FILE][SEPERATOR][lower][increment]",action = "count")
+parser.add_argument("--formatword","-F", help = "Prints the arguments as the format specificified[arabic,floating,alpha,roman].",action = "count")
+parser.add_argument("--numberlines","-n",help = "Prints the contents of a file numbered with parameters entered.( [FORMAT][FILE][SEPERATOR][lower][increment] )",action = "count")
+
 #Postionals
 parser.add_argument("string", nargs="?", default= " ",help = "A string that will seperate the numbers in the sequence")
 parser.add_argument("lower", nargs = "?", help = "Lower bounds of the sequence")
 parser.add_argument("upper", nargs = "?", help = "Upper bounds of the sequence")
 parser.add_argument("increment", nargs = "?", help = "Increment of the sequence")
+parser.add_argument("format", nargs = "?", help = "The format for the --formatwords")
 
 args = parser.parse_args()
 
-print len(argv)
 #The definition of Arguments
 if args.version == 1:
     print"SEQU Version "+__VERSION
     exit(1)
+
+#Handles the number lines arguments
 if args.numberlines == 1:
-    if len(argv) <=2 or len(argv) > 7:
+    #Throws out bad input
+    if len(argv) <=2 or len(argv) > 8:
         defaultError('Invalid number of arguments.')
-    #Will check to see if the type selected is an acceptable type for format-word. 
+    #Will be used to check if the type selected is an acceptable type for format-word. 
     acceptableTypes = ['arabic','ARABIC','floating','FLOATING','alpha','ALPHA','roman','ROMAN']
     #[-n FILE] 
     if len(argv) == 3:
         fileList = putLinesInList(argv[2])
-        printFileSeq(__LOWER,__INCREMENT,fileList)
+        printFileSeq(__LOWER,__INCREMENT,fileList,__SEPARATOR)
     #[-n TYPE FILE] or [-n FILE lower]
     if len(argv) == 4:
         #[-n TYPE FILE]
@@ -337,97 +405,33 @@ if args.numberlines == 1:
             formatType = str(argv[2]).lower()
             fileList = putLinesInList(argv[3])
             if formatType == 'arabic':
-                printFileSeq(__LOWER,__INCREMENT,fileList)
+                printFileSeq(__LOWER,__INCREMENT,fileList,__SEPARATOR)
             if formatType == 'floating':
-                printFileSeq(float(__LOWER),float(__INCREMENT),fileList)
+                printFileSeq(float(__LOWER),float(__INCREMENT),fileList,__SEPARATOR)
             if formatType == 'alpha':
-                printFileAlphaSeq(charToInt('a'),__INCREMENT,fileList)
+                printFileAlphaSeq(charToInt('a'),__INCREMENT,fileList,__SEPARATOR)
             if formatType == 'roman':
-                printFileRomanSeq(__LOWER,__INCREMENT,fileList)
+                printFileRomanSeq(__LOWER,__INCREMENT,fileList,__SEPARATOR)
         else:
-            #[-n FILE Lowery]
+            #[-n FILE lower]
             fileList = putLinesInList(argv[2])
             lower = str(argv[3])
-            #Integer
-            if isInt(lower):
-                printFileSeq(int(lower),__INCREMENT,fileList)
-            #Float
-            elif isFloat(lower):
-                printFileSeq(float(lower),__INCREMENT,fileList)
-            #Alpha
-            elif len(lower) == 1 and not isInt(lower) and not isFloat(lower):
-                printFileAlphaSeq(charToInt(lower),__INCREMENT,fileList)
-            #Roman
-            elif romanToInt(lower) != 0:
-                printFileRomanSeq(romanToInt(lower),__INCREMENT,fileList)
-            else:
-                defaultError('Invalid Input.')
-    #[-n TYPE FILE lower] or [-n FILE lower upper]
+            determine(lower,__INCREMENT,__SEPARATOR,fileList)
+    #[-n TYPE FILE lower] or [-n FILE lower increment]
     if len(argv) == 5:
         #[-n TYPE FILE lower]        
         if str(argv[2]).lower() in acceptableTypes:
             formatType = str(argv[2]).lower()
             fileList = putLinesInList(argv[3])
             lower = str(argv[4])
-            #Integer
-            if formatType == 'arabic':
-                if isFloat(lower):
-                    printFileSeq(int(math.floor(float(lower))),__INCREMENT,fileList)
-                else:
-                    defaultError('Invalid Input.')
-            #Float
-            if formatType == 'floating':
-                if isFloat(lower):
-                    printFileSeq(float(lower),float(__INCREMENT),fileList)
-                else:
-                    defaultError('Invalid Input.')
-            if formatType == 'alpha':
-                #Verifys that lower is [A-Z] or [a-z]
-                if len(lower) != 1 or ord(lower) < 65 or ord(lower) > 90 and ord(lower) < 97 or ord(lower) > 122:
-                    defaultError('Invalid Input.')
-                printFileAlphaSeq(charToInt(lower),__INCREMENT,fileList)
-            if formatType == 'roman':
-                if isInt(lower):
-                    lower = int(lower)
-                elif romanToInt(lower) != 0:
-                    lower = romanToInt(lower)
-                else:
-                    defaultError('Invalid roman character in input')
-                printFileRomanSeq(lower,__INCREMENT,fileList)
+            determineWithFormatType(formatType,lower,__INCREMENT,__SEPARATOR,fileList)
         #[-n FILE lower increment]
         else:
             fileList = putLinesInList(argv[2])
             lower = str(argv[3])
             increment = str(argv[4])
-            #Integer & Float
-            if isFloat(lower) and isFloat(increment):
-                if isInt(lower):
-                    lower = int(lower)
-                else:
-                    lower = float(lower)
-                if isInt(increment):
-                    increment = int(increment)
-                else:
-                    increment = float(increment)
-                verifyIncrement(increment)
-                printFileSeq(lower,increment,fileList)
-            #Alpha
-            elif len(lower) == 1 and isInt(increment) and not isInt(lower) and not isFloat(lower):
-                if len(lower) != 1 or ord(lower) < 65 or ord(lower) > 90 and ord(lower) < 97 or ord(lower) > 122:
-                    defaultError('Invalid Input.')
-                printFileAlphaSeq(charToInt(lower),int(increment),fileList)
-            #Roman
-            elif romanToInt(lower) != 0 or romanToInt(increment) != 0:
-                if romanToInt(lower) != 0 and romanToInt(increment) != 0:
-                    printFileRomanSeq(romanToInt(lower),romanToInt(increment),fileList)
-                elif romanToInt(increment) != 0 and isFloat(lower):
-                    printFileRomanSeq(int(math.floor(float(lower))),romanToInt(increment),fileList)
-                elif romanToInt(lower) != 0 and isInt(increment):
-                    printFileRomanSeq(romanToInt(lower),int(increment),fileList)
-                else:
-                    defaultError('Invalid Input.')
-            else:
-                defaultError('Invalid Input.')
+            determine(lower,increment,__SEPARATOR,fileList)           
+    #[-n TYPE FILE lower increment] and [-n FILE lower increment seperator]
     if len(argv) == 6:
     #[-n TYPE FILE lower increment]
         if str(argv[2]).lower() in acceptableTypes:
@@ -435,71 +439,35 @@ if args.numberlines == 1:
             fileList = putLinesInList(argv[3])
             lower = str(argv[4])
             increment = str(argv[5])
-            #Integer
-            if formatType == 'arabic':
-                if isFloat(lower) and isFloat(increment):
-                    verifyIncrement(int(math.floor(float(increment))))
-                    printFileSeq(int(math.floor(float(lower))),int(math.floor(float(increment))),fileList)
-                else:
-                    defaultError('Invalid Input.')
-            #Float
-            if formatType == 'floating':
-                if isFloat(lower) and isFloat(increment):
-                    verifyIncrement(float(increment))
-                    printFileSeq(float(lower),float(increment),fileList)
-                else:
-                    defaultError('Invalid Input.')
-            if formatType == 'alpha':
-                #Verifys that lower is [A-Z] or [a-z]
-                if len(lower) != 1 or ord(lower) < 65 or ord(lower) > 90 and ord(lower) < 97 or ord(lower) > 122:
-                    defaultError('Invalid Input.')
-                if not isInt(increment):
-                    defaultError('Invalid Input.')
-                printFileAlphaSeq(charToInt(lower),int(increment),fileList)
-            if formatType == 'roman':
-                #Assigns the lower correctly
-                if isInt(lower):
-                    lower = int(lower)
-                elif romanToInt(lower) != 0:
-                    lower = romanToInt(lower)
-                else:
-                    defaultError('Invalid roman character in input')
-                #Assigns the increment correctly
-                if isInt(increment):
-                    increment = int(increment)
-                elif romanToInt(increment) != 0:
-                    increment = romanToInt(increment)
-                else:
-                    defaultError('Invalid roman character in input')
-                verifyIncrement(increment)
-                printFileRomanSeq(lower,increment,fileList)
-            defaultError('Invalid Input.')
+            determineWithFormatType(formatType,lower,increment,__SEPARATOR,fileList)
+        #[-n FILE lower increment seperator]
+        else:
+            fileList = putLinesInList(argv[2])
+            lower = str(argv[3])
+            increment = str(argv[4])
+            separator = str(argv[5])
+            determine(lower,increment,separator,fileList)
+    #[-n TYPE FILE lower increment seperator]
+    if len(argv) == 7:
+        if str(argv[2]).lower() in acceptableTypes:
+            formatType = str(argv[2]).lower()
+            fileList = putLinesInList(argv[3])
+            lower = str(argv[4])
+            increment = str(argv[5])
+            separator = str(argv[6])
+            determineWithFormatType(formatType,lower,increment,separator,fileList)
         else:
             defaultError('Invalid Input.')
-    exit(1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #Handles the format word case
 if args.formatword == 1:
     #Verifys that there are a correct number of arguments
     if len(argv) <= 3 or len(argv) > 6:
         defaultError('Invalid number of Arguments')
+
     #Will check to see if the type selected is an acceptable type for format-word. 
     acceptableTypes = ['arabic','ARABIC','floating','FLOATING','alpha','ALPHA','roman','ROMAN']
+
     if str(argv[2]).lower() in acceptableTypes:
         formatType = str(argv[2]).lower()
     else:
@@ -508,6 +476,7 @@ if args.formatword == 1:
     #[-F TYPE Upper]
     if len(argv) == 4:
         upper = str(argv[3])
+        determineWithFormatType
         if formatType == 'arabic':
             if isFloat(upper):
                 upper = math.floor(float(upper))

@@ -112,9 +112,9 @@ if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
 
-handle the -n flag that has input [-n FILE],[-n lower FILE],[-n lower increment FILE]
+handle the -n flag that has input [-n FILE],[-n FILE lower ],[-n FILE lower increment],[-n TYPE FILE lower increment]
 	assign the list value by calling a function
-	verify that there are between 3 and 5 arguments
+	verify that there are between 3 and 6 arguments
 	have a flag that will determine if its integers,float,alpha or roman
 	if there are 3 arguments
 		default lower

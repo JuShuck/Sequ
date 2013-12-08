@@ -20,6 +20,19 @@ numeral_map = zip(
     (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
     ('M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
 )
+def isInt(num):
+    try:
+        num = int(num)
+        return True
+    except:
+        return False
+
+def isFloat(num):
+    try:
+        num = float(num)
+        return True
+    except:
+        return False
 
 #Default invalid input error and exits
 def defaultError(string):
@@ -32,6 +45,7 @@ def printSeq(lower,increment,upper):
     while lower <= upper:
         print(lower)
         lower = lower + increment 
+    exit(1)
 
 #emulates the printf function that is used in C
 def printf(format,*args):
@@ -141,7 +155,13 @@ def alphaSeq(lower,increment,upper):
             lower = lower + increment
     else:
         defaultError('Invalid character detected')
-
+    exit(1)
+def findCorrectLower(upper):
+    if chr(upper).isupper():
+        lower = charToInt('A')
+    else:    
+        lower = charToInt('a')
+    return lower
 #checks to make sure that both arguments are upper case or lower case
 def checkMismatchingBounds(lower,upper):
     if chr(upper).isupper() and chr(lower).isupper():
@@ -230,10 +250,7 @@ if args.formatword == 1:
         elif formatType == 'alpha':
             upper = verifyChar(str(argv[3]))
             upper = charToInt(upper)
-            if chr(upper).isupper():
-                lower = charToInt('A')
-            else:    
-                lower = charToInt('a')
+            lower = findCorrectLower(upper)
             increment = 1
         elif formatType == 'roman':
             try:
@@ -336,7 +353,7 @@ if args.formatword == 1:
             defaultError('Mixed input.')
     else:
         printSeq(lower,increment,upper)
-exit(1)
+	exit(1)
 
 
 #Defines that variables based on the position of the argument.  
@@ -489,25 +506,160 @@ if args.padspaces == 1:
 
 # Used to verify Invalid number of arguments
 if len(argv) <= 1 or len(argv) >= 5:
-    print('Error: Invalid number of arguments.')
-    exit(1)
+    defaultError('Invalid number of arguments.')
 
-
-#This will be used if there are no flags in front of the numbers if no increment is given the default is 1
+#[upper]
 if len(argv) == 2:
+    upper = str(argv[1])
+    #Integer input
+    if isInt(upper):
+        printSeq(__LOWER,__INCREMENT,int(upper))
+    #Floating input
+    if isFloat(upper):
+        printSeq(float(__LOWER),float(__INCREMENT),float(upper))
+    #Alpha input
+    if len(upper) == 1 and not isInt(upper) and not isFloat(upper):
+        alphaSeq(findCorrectLower(charToInt(upper)),__INCREMENT,charToInt(upper))
+    #Roman input
+    if romanToInt(upper) != 0:
+        romanSeq(__LOWER,__INCREMENT,romanToInt(upper))
+    defaultError('Invalid Input.')
+#[lower upper]
+elif len(argv) == 3:
+    lower = str(argv[1])
+    upper = str(argv[2])
+    increment = __INCREMENT
+    #Integer input
+    if isInt(lower) and isInt(upper):
+        printSeq(int(lower),__INCREMENT,int(upper))
+    #Floating input
+    if isFloat(lower) and isFloat(upper):
+       printSeq(float(lower),__INCREMENT,float(upper))
+    #Alpha input
+    if len(upper) == 1 and len(lower) == 1 and not isInt(upper) and not isInt(lower):
+        checkMismatchingBounds(charToInt(lower),charToInt(upper))
+        alphaSeq(charToInt(lower),__INCREMENT,charToInt(upper))
+    #Roman input
+    if romanToInt(lower) != 0 and romanToInt(upper) != 0:
+        romanSeq(romanToInt(lower),__INCREMENT,romanToInt(upper))
+    defaultError('Invalid Input.')
+#[lower increment upper]
+elif len(argv) == 4:
+    lower = str(argv[1])
+    increment = str(argv[2])
+    upper = str(argv[3])
+    #Integer input
+    if isInt(lower) and isInt(increment) and isInt(upper):
+         printSeq(int(lower),int(increment),int(upper))
+    #Floating input
+    if isFloat(lower) and isFloat(increment) and isFloat(upper):
+        printSeq(float(lower),float(increment),float(upper))
+    #Alpha input
+    if len(upper) == 1 and len(lower) == 1 and isInt(increment) and not isInt(upper) and not isInt(lower):
+        checkMismatchingBounds(char)
+        alphaSeq(charToInt(lower),increment,charToInt(upper))
+    #Roman input
+    if romanToInt(lower) != 0 and romanToInt(increment) != 0 and romanToInt(upper) != 0:
+        romanSeq(romanToInt(lower),romanToInt(increment),romanToInt(upper))
+    defaultError('Invalid Input.')
+
+
+
+
+
+
+
+
+
+
+exit(1)
+if len(argv) >= 2:
     try:
-	int(str(argv[1]))
+        upper = int(str(argv[1]))
         lower = __LOWER
-	increment = __INCREMENT
+        increment = __INCREMENT
+        if len(argv) == 3:
+            lower = upper
+            upper = int(str(argv[2]))
+        if len(argv) == 4:
+            lower = upper
+            increment = int(str(argv[2]))
+            verifyIncrement(increment)
+            upper = int(str(argv[3]))
+        printSeq(lower,increment,upper)
+        flag = True
     except:
-	try:
-	    float(str(argv[1]))
-            lower = 1.0
-	    increment = 1.0
+        pass
+
+    if not flag:
+        try: 
+	    upper = float(str(argv[1]))
+            lower = float(__LOWER)
+	    increment = float(__INCREMENT)
+            if len(argv) == 3:
+                lower = upper
+                upper = float(str(argv[2]))
+            if len(argv) == 4:
+                lower = upper
+                increment = float(str(argv[2]))
+                verifyIncrement(increment)
+                upper = float(str(argv[3]))
+            printSeq(lower,increment,upper)
+            flag = True
         except:
-            defaultError('Invalid Input.')
-    upper = verifyArg(str(argv[1]),1)
-#if there is not
+            pass
+    if not flag: 
+        try:         
+            if len(str(argv[1])) == 1 and not isInt(str(argv[1])):
+                upper = charToInt(str(argv[1]))
+                if chr(upper).isupper():
+                    lower = charToInt('A')
+                else:    
+                    lower = charToInt('a')
+                increment = __INCREMENT
+                if len(argv) == 3:
+                    if not isInt(str(argv[2])):
+                        lower = upper
+			upper = charToInt(str(argv[2]))
+                    else:
+                        earlyExitFlag = True
+                if len(argv) == 4:
+                    lower = upper
+                    try:
+                        increment = int(str(argv[2]))
+                    except:
+                        earlyExitFlag = True
+                    if not isInt(str(argv[3])):
+                        upper = charToInt(str(argv[3]))
+                    else:
+                        earlyExitFlag = True
+                if not earlyExitFlag:
+                    alphaSeq(lower,increment,upper)
+                    flag = True
+            else:
+	        earlyExitFlag = True
+        except:
+            pass
+#    if earlyExitFlag:
+ #       defaultError('Invalid Input.')
+    if not flag:
+        try:
+            upper = str(argv[1])
+	    upper = romanToInt(upper)
+	    if upper <= 0:
+                defaultError('what up')
+            lower = __LOWER
+            increment = __INCREMENT
+            flag = True
+            romanSeq(lower,increment,upper)
+            earlyExitFlag = False
+        except:
+            pass
+    if not flag or earlyExitFlag:
+        defaultError('..invalid inp..')
+    else:
+        exit(1)
+#if there is not holla
 if len(argv) >= 3:
     lower = verifyArg(str(argv[1]),1)
     #if there is an increment variable(lower,increment,upper)

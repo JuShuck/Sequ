@@ -40,7 +40,6 @@ def defaultError(string):
     print 'ERROR:',string
     exit(1)
 
-
 #will print the sequence that has a lower and upper bound and an increment.
 def printSeq(lower,increment,upper):
     while lower <= upper:
@@ -113,6 +112,7 @@ def wordsImplementation(word):
     finalString += stringWord[wordLen]
     print finalString
     return
+
 #converts a single char to its integer form
 def charToInt(character):
     try:
@@ -126,7 +126,7 @@ def intToChar(integer):
     try:
         character = ch(integer)
     except:
-        defaultError('2')
+        defaultError('Invalid Input.')
 
 #verifies that the argument is not an integer
 def verifyChar(argument):
@@ -140,7 +140,6 @@ def verifyChar(argument):
         defaultError('Invalid input. Input accepts single length characters.')
     return holder
 
-    
 #prints the alpha sequence baased on if it is upper case or lower case
 def alphaSeq(lower,increment,upper):
     # [A-Z] = [65 - 90] 
@@ -157,6 +156,7 @@ def alphaSeq(lower,increment,upper):
     else:
         defaultError('Invalid character detected')
     exit(1)
+
 #Used to find the other 'bound' of a given char input. Will ensure that the sequence is all in upper-case or lower-case
 def findOtherBound(boundOne):
     if chr(boundOne).isupper():
@@ -358,6 +358,7 @@ def determine(lower,increment,separator,fileList):
         defaultError('Invalid Input.') 
 
 
+
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
 
@@ -533,7 +534,7 @@ if args.formatword == 1:
         elif formatType == 'roman':
             #Assigns the integer representation of the lower
             computeRoman(lower,increment,upper)
-        defaultError('Invalid Input..')
+        defaultError('Invalid Input.')
 
 
 #This will assign the variables needed to print the users request.

@@ -99,6 +99,11 @@ define a print roman sequence
 		print the output as roman
 		increment the lower
 
+define a function that will turn the contents of a file into a list
+	try finding the file
+		if its found then put each line into a list
+	otherwise
+		exit the program
 
 #########################
 
@@ -107,6 +112,37 @@ if there are not the correct number of arguments OR invalid argument
     print error message
     exit the program
 
+handle the -n flag that has input [-n FILE],[-n lower FILE],[-n lower increment FILE]
+	assign the list value by calling a function
+	verify that there are between 3 and 5 arguments
+	have a flag that will determine if its integers,float,alpha or roman
+	if there are 3 arguments
+		default lower
+		default increment
+
+	if there are 4 arguments
+		if its an integer
+			assign variables as integers
+		if its a float
+			assign variables as floats
+		if its an alpha
+			assign variables as alpha numbers
+		if its roman
+			assign variables as roman numbers
+
+	if there are 5 arguments
+		if its an integer
+			assign variables as integers
+		if its a float
+			assign variables as floats
+		if its an alpha
+			assign variables as alpha numbers
+		if its roman
+			assign variables as roman numbers
+
+	print based on the argument type
+
+handle the -n flag mixxed with the -
     
 handle the --formatword portion of the program
 	append arguments into a list

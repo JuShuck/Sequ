@@ -1,4 +1,4 @@
-	# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013. Compliance level 1 is due on 11/11/2013
+# This program is a modified seq command called sequ. This source code will hose all 5 compliance levels. Compliance level 0 is due on 10/20/2013. Compliance level 1 is due on 11/11/2013
 # Name: Justin Shuck
 # Copy right (c) Justin Shuck
 
@@ -141,7 +141,7 @@ def verifyChar(argument):
 #prints the alpha sequence baased on if it is upper case or lower case
 def alphaSeq(lower,increment,upper):
     # [A-Z] = [65 - 90] 
-    print lower, '/', increment,'/', upper
+    #print lower, '/', increment,'/', upper 		#Used to see the integer values of the variables passed into alphaSeq
     if 65 <= lower <= 90 and 65<= upper <= 90:
         while lower <= upper:
             print chr(lower)
@@ -196,6 +196,32 @@ def romanSeq(lower,increment,upper):
         lower += increment
     exit(1)
 
+#Handles the roman instances(i.e. mixed roman/int input)    
+def computeRoman(lower,increment,upper):
+       #Assigns the integer representation of the lower
+    if isInt(lower):
+        lower = int(lower)
+    elif romanToInt(lower) != 0:
+        lower = romanToInt(lower)
+    else:
+        defaultError('Invalid roman character in input1')
+     #Assigns the integer representation of the increment
+    if isInt(increment):
+        increment = int(increment)
+    elif romanToInt(increment) != 0:
+        increment = romanToInt(increment)
+    else:
+        defaultError('Invalid roman character in input1')
+    #Assigns the integer representation of the upper
+    if isInt(upper):
+        upper = int(upper)
+    elif romanToInt(upper) != 0:
+        upper = romanToInt(upper)
+    else:
+        defaultError('Invalid roman character in input1')
+    romanSeq(lower,increment,upper)
+
+
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()
 
@@ -247,18 +273,7 @@ if args.formatword == 1:
             lower = findCorrectLower(charToInt(upper))
             alphaSeq(lower,__INCREMENT,charToInt(upper))
         elif formatType == 'roman':
-             #Assigns the integer representation of the lower
-            lower = __LOWER
-            #Assigns the integer representation of the increment
-            increment = __INCREMENT
-            #Assigns the integer representation of the upper
-            if isInt(upper):
-                upper = int(upper)
-            elif romanToInt(upper) != 0:
-                upper = romanToInt(upper)
-            else:
-                defaultError('Invalid roman character in input')
-            romanSeq(lower,increment,upper)
+            computeRoman(__LOWER,__INCREMENT,upper)
         defaultError('Invalid Input.')
     #[-F TYPE Lower Upper]
     if len(argv) == 5:
@@ -275,23 +290,7 @@ if args.formatword == 1:
                 checkMismatchingBounds(charToInt(lower),charToInt(upper))
                 alphaSeq(charToInt(lower),__INCREMENT,charToInt(upper))
         elif formatType == 'roman':
-         #Assigns the integer representation of the lower
-            if isInt(lower):
-                lower = int(lower)
-            elif romanToInt(lower) != 0:
-                lower = romanToInt(lower)
-            else:
-                defaultError('Invalid roman character in input')
-            #Assigns the integer representation of the increment
-            increment = __INCREMENT
-            #Assigns the integer representation of the upper
-            if isInt(upper):
-                upper = int(upper)
-            elif romanToInt(upper) != 0:
-                upper = romanToInt(upper)
-            else:
-                defaultError('Invalid roman character in input')
-            romanSeq(lower,increment,upper)
+            computeRoman(lower,__INCREMENT,upper)
         defaultError('Invalid Input.')
     #[-F TYPE Lower Increment Upper]
     if len(argv) == 6:
@@ -313,28 +312,7 @@ if args.formatword == 1:
                 alphaSeq(charToInt(lower),int(increment),charToInt(upper))
         elif formatType == 'roman':
             #Assigns the integer representation of the lower
-            if isInt(lower):
-                lower = int(lower)
-            elif romanToInt(lower) != 0:
-                lower = romanToInt(lower)
-            else:
-                defaultError('Invalid roman character in input1')
-            #Assigns the integer representation of the increment
-            if isInt(increment):
-                increment = int(increment)
-            elif romanToInt(increment) != 0:
-                increment = romanToInt(increment)
-            else:
-                defaultError('Invalid roman character in input1')
-            #Assigns the integer representation of the upper
-            if isInt(upper):
-                upper = int(upper)
-            elif romanToInt(upper) != 0:
-                upper = romanToInt(upper)
-            else:
-                defaultError('Invalid roman character in input1')
-            romanSeq(lower,increment,upper)
-
+            computeRoman(lower,increment,upper)
         defaultError('Invalid Input..')
 
 
@@ -525,7 +503,7 @@ elif len(argv) == 3:
         checkMismatchingBounds(charToInt(lower),charToInt(upper))
         alphaSeq(charToInt(lower),__INCREMENT,charToInt(upper))
     #Roman input
-    if romanToInt(lower) != 0 and romanToInt(upper) != 0:
+    if (romanToInt(lower)+1) != 0 and (romanToInt(upper)+1) != 0:
         romanSeq(romanToInt(lower),__INCREMENT,romanToInt(upper))
     defaultError('Invalid Input.')
 #[lower increment upper]
@@ -547,6 +525,6 @@ elif len(argv) == 4:
         verifyIncrement(int(increment))
         alphaSeq(charToInt(lower),int(increment),charToInt(upper))
     #Roman input
-    if romanToInt(lower) != 0 and romanToInt(increment) != 0 and romanToInt(upper) != 0:
-        romanSeq(romanToInt(lower),romanToInt(increment),romanToInt(upper))
+    if romanToInt(lower) != 0  or romanToInt(upper) != 0:
+    	computeRoman(lower,increment,upper)
     defaultError('Invalid Input.')

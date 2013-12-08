@@ -220,7 +220,37 @@ def computeRoman(lower,increment,upper):
     else:
         defaultError('Invalid roman character in input1')
     romanSeq(lower,increment,upper)
+def putLinesInList():
+    try:
+        with open(argv[1]) as f:
+            resultingList = f.read().splitlines()
+    	return resultingList
+    except:
+    	defaultError('File not found')
+def printFileSeq(lower,increment,lineList):
+    #Finds the max width of the last sequence number
+    listLen = len(lineList)-1
+    largest = lower
+    while listLen > 0:
+        listLen -= 1
+        largest +=increment
+    maxWidth = len(str(largest))
+    for first,line in enumerate(lineList):
+        print str(lower).rjust(maxWidth,' '),' ',line
+        lower +=increment
 
+myList = putLinesInList()
+
+#for first, second in enumerate(myList):
+ #   print first+1,'.',second
+printFileSeq(__LOWER,3,myList)
+exit(1)    
+for i in myList:
+    print str(i).join(map(str,putLinesInList()))
+    i +=1
+#print '\n'.join(map(str,putLinesInList()))
+
+exit(1)
 
 # Define arguments that are handled in this program
 parser = argparse.ArgumentParser()

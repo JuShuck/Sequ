@@ -3,10 +3,76 @@
 # Copy right (c) Justin Shuck
 
 The sequ command is a modified version of seq.
+Positional Arguments:
+	strings				A string that will seperate the numbers in the sequence
+	lower				Lower bounds of the sequence
+	upper				Upper bounds of the sequence
+	incremenet			Increment of the sequence
+	format 				The format for the --formatwords
 
-Commands:
+Optional Arguments:
 	-f --format 		uses printf floating-point format
 	-s --separator		seperates numbers
 	-w --equal-width	equalizes width by adding leading zeros
-	-h --help		displays the commands and a description of the 				        commands
-	-v --version		prints the version of sequ		
+	-h --help			displays the commands and a description of the commands
+	-v --version		prints the version of sequ
+	-W --words			prints the sequence on a single line
+	-p --pad			Outputs the sequence with single char pad strings.		
+	-P --padspaces		Output the sequence with spaces on the left to be all equal width
+	-F --formatword		Prints the arguments as the format specified[arabic, floating, alpha, roman]
+	-n --numberlines	Prints the contents of a file numbered with parameters entered. (FORMAT FILE lower increment separator)
+
+Positions Further Explained:
+
+Format(-f,--format)
+	sequ.py -f upper
+	sequ.py -f lower upper
+	sequ.py -f FORMAT upper
+	sequ.py -f FORMAT lower upper
+	sequ.py -f lower increment upper
+	sequ.py -f FORMAT lower increment upper
+
+Separator(-s,--separator)
+	sequ.py -s upper
+	sequ.py -s STRING upper
+	sequ.py -s STRING lower upper
+
+Equal Width(-w,--equalwidth)
+	sequ.py -w upper
+	sequ.py -w lower upper
+	sequ.py -w lower increment upper
+
+Help(-h,--help)
+	sequ.py -h
+
+Version(-v,--version)
+	sequ.py -v
+
+Words(-W,--words)
+	sequ.py -W STRING
+
+Pad(-p,--pad)
+	sequ.py -p PADCHAR upper
+	sequ.py -p PADCHAR lower upper
+	sequ.py -p PADCHAR lower increment upper
+
+Pad Spaces(-P,--padspaces)
+	sequ.py -P upper
+	sequ.py -P lower upper
+	sequ.py -P lower increment upper
+
+Format word(-F,--formatword)
+	sequ.py -F TYPE upper
+	sequ.py -F TYPE lower upper
+	sequ.py -F TYPE lower increment upper
+
+Number Lines(-n,--numberlines)
+	sequ.py -n FILE
+	sequ.py -n TYPE FILE
+	sequ.py -n FILE lower
+	sequ.py -n TYPE FILE lower
+	sequ.py -n FILE lower increment
+	sequ.py -n TYPE FILE lower increment
+	sequ.py -n FILE lower increment separator
+	sequ.py -n TYPE FILE lower increment separator
+

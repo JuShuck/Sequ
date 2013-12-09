@@ -14,6 +14,7 @@ __FORMAT = "%g"
 __SEPARATOR = ' '
 
 #Roman numeral dictionary used to print the sequence in roman
+#Credit for roman numerial implementation Tim Valenta [code.activestate.com/recipes/81611-roman-numerals/]
 numeral_map = zip(
     (1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1),
     ('M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
@@ -91,6 +92,7 @@ def printPad(lower,increment,upper,maxWidth,padChar):
         lower = lower+increment
 
 #Turns any backslash argument into its form
+# Credit for help: Souriya Khaosanga
 def fixBackSlash(string):
     backSlashN = string.replace('\\n','\n') 
     backSlashT = backSlashN.replace('\\t','\t')
@@ -372,7 +374,7 @@ group.add_argument("--words","-W", help = "Prints the sequence on a single line"
 group.add_argument("--pad","-p", help = "Output the sequence with a single-char pad string.",action = "count")
 group.add_argument("--padspaces","-P", help = "Output the sequence with spaces on the left to be all equal width.",action = "count")
 parser.add_argument("--formatword","-F", help = "Prints the arguments as the format specificified[arabic,floating,alpha,roman].",action = "count")
-parser.add_argument("--numberlines","-n",help = "Prints the contents of a file numbered with parameters entered.( [FORMAT][FILE][SEPERATOR][lower][increment] )",action = "count")
+parser.add_argument("--numberlines","-n",help = "Prints the contents of a file numbered with parameters entered.( [FORMAT][FILE][lower][increment][separator] )",action = "count")
 
 #Postionals
 parser.add_argument("string", nargs="?", default= " ",help = "A string that will seperate the numbers in the sequence")
